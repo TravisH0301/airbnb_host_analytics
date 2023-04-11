@@ -2,8 +2,6 @@
 *.conf
 terraform/*
 !*.tf
-test/*
-*test*
-!tests/*
+test.py
 
 
