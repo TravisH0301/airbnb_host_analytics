@@ -1,3 +1,6 @@
+name: airbnb-host-analytics
+version: 1.0.0
+
 models:
   airbnb-host-analytics:
     raw_data:
