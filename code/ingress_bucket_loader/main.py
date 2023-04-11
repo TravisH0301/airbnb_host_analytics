@@ -28,6 +28,9 @@ def load_data_to_gcs(request):
         
         # Load unzipped CSV dataset into dataframe
         df = pd.read_csv(file_path_csv)
+        # Replace new lines with spaces
+        df= df.applymap(lambda x: x.replace("\r"," "))
+        df= df.applymap(lambda x: x.replace("\n"," "))
 
         # Upload data to GCS bucket
         storage_client = storage.Client()
