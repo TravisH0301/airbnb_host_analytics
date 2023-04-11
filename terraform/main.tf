@@ -37,6 +37,11 @@ resource "google_bigquery_dataset" "raw-data" {
   description = "Dataset for raw data"
   location    = var.region
 }
+resource "google_bigquery_dataset" "staging" {
+  dataset_id  = "airbnb_staging"
+  description = "Dataset for staging data"
+  location    = var.region
+}
 resource "google_bigquery_dataset" "data-mart" {
   dataset_id  = "airbnb_data_mart"
   description = "Dataset for data mart"
