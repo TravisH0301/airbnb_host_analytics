@@ -1,12 +1,15 @@
 WITH BASE AS (
     SELECT
         last_scraped AS SNAPSHOT_DATE,
+        STRPOS('/' IN REVERSE(listing_url)) - 1
+        /*
         CAST(
             RIGHT(
                 listing_url,
                 STRPOS('/' IN REVERSE(listing_url)) - 1
             ) AS INT64
         ) AS LISTING_ID,
+        */
         host_id AS HOST_ID,
         DATE_DIFF(
             'YEAR',
