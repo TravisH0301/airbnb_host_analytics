@@ -1,15 +1,12 @@
 WITH BASE AS (
     SELECT
         last_scraped AS SNAPSHOT_DATE,
-        STRPOS(REVERSE(listing_url), '/') - 1 AS TEST_COL,
-        /*
         CAST(
             RIGHT(
                 listing_url,
-                STRPOS('/' IN REVERSE(listing_url)) - 1
+                 STRPOS(REVERSE(listing_url), '/') - 1
             ) AS INT64
         ) AS LISTING_ID,
-        */
         host_id AS HOST_ID,
         DATE_DIFF(
             'YEAR',
@@ -33,7 +30,7 @@ WITH BASE AS (
     FROM {{ source('raw_data', 'airbnb_raw') }}
     WHERE
         1 = 1
-        AND host_identity_verified = 't'
+        AND host_identity_verified = TRUE
         AND availability_60 <> 0
         AND availability_90 <> 0
         AND availability_365 <> 0
