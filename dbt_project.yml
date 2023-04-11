@@ -1,10 +1,15 @@
-name: airbnb-host-analytics
+name: airbnb_host_analytics
 
 config-version: 2
 version: 1.0.0
 
+profile: dbt_bigquery
+
+model-paths: ["models"]
+test-paths: ["tests"]
+
 models:
-  airbnb-host-analytics:
+  airbnb_host_analytics:
     staging:
       materialized: view
     data_mart:
