@@ -30,8 +30,7 @@ WITH BASE AS (
         ROUND((30 - availability_30) / 30 * 100, 0) AS LISTING_OCCUPANCY_RATE,
         number_of_reviews AS LISTING_REVIEW_COUNT,
         neighbourhood_cleansed AS LISTING_MUNICIPALITY
-    FROM
-        { { source('raw_data', 'airbnb_raw') } }
+    FROM {{ source('raw_data', 'airbnb_raw') }}
     WHERE
         1 = 1
         AND host_identity_verified = 't'
