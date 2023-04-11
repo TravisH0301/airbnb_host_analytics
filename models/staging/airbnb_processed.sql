@@ -1,7 +1,7 @@
 WITH BASE AS (
     SELECT
         last_scraped AS SNAPSHOT_DATE,
-        STRPOS('/', REVERSE(listing_url)) - 1 AS TEST_COL,
+        STRPOS(REVERSE(listing_url), '/') - 1 AS TEST_COL,
         /*
         CAST(
             RIGHT(
