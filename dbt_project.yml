@@ -1,0 +1,12 @@
+models:
+  airbnb-host-analytics:
+    raw_data:
+      materialized: external
+      external:
+        location: gs://airbnb_ingress/listings.csv
+    staging:
+      materialized: view
+    data_mart:
+      materialized: table
+    metric_layer:
+      materialized: table
