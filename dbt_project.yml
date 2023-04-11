@@ -11,7 +11,7 @@ test-paths: ["tests"]
 models:
   airbnb_host_analytics:
     staging:
-      materialized: view
+      materialized: table
     data_mart:
       materialized: table
     metric_layer:
