@@ -1,4 +1,6 @@
 name: airbnb-host-analytics
+
+config-version: 2
 version: 1.0.0
 
 models:
