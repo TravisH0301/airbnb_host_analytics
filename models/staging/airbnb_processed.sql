@@ -30,7 +30,7 @@ WITH BASE AS (
     FROM {{ source('raw_data', 'airbnb_raw') }}
     WHERE
         1 = 1
-        AND host_identity_verified = TRUE
+        AND host_identity_verified = 't'
         AND availability_60 <> 0
         AND availability_90 <> 0
         AND availability_365 <> 0
