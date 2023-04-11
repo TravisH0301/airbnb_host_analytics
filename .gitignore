@@ -3,5 +3,6 @@
 terraform/*
 !*.tf
 test/*
+*test*
 
 
