@@ -4,5 +4,6 @@ terraform/*
 !*.tf
 test/*
 *test*
+!tests/*
 
 
