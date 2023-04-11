@@ -37,7 +37,7 @@ def load_data_to_gcs(request):
             "host_about"
         ]
         for col in change_cols:
-            df[col]= df[col].apply(lambda x: x.replace("\r"," ").replace("\n"," "))
+            df[col]= df[col].apply(lambda x: x.replace("\r"," ").replace("\n"," ") if type(x)==str else x)
 
         # Upload data to GCS bucket
         storage_client = storage.Client()
