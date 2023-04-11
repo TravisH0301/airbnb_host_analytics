@@ -9,9 +9,9 @@ WITH BASE AS (
         ) AS LISTING_ID,
         host_id AS HOST_ID,
         DATE_DIFF(
-            host_since,
             CURRENT_DATE(),
-            'YEAR'
+            host_since,
+            YEAR
         ) AS HOST_YEAR_OF_EXP,
         CAST(
             LENGTH(RTRIM(LTRIM(host_about))) - LENGTH(REPLACE(RTRIM(LTRIM(host_about)), ' ', '')) + 1 AS NUMERIC
