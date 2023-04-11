@@ -1,2 +1,2 @@
 select *
-from {{ ref('airbnb_raw_data') }}
+from {{ source('raw_data', 'airbnb_raw_data') }}
