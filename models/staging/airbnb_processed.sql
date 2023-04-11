@@ -1,6 +1,6 @@
 WITH BASE AS (
     SELECT
-        last_scraped AS SNAPSHOT_DATE,
+        PARSE_DATE('%Y-%m-%d',  last_scraped) AS SNAPSHOT_DATE,
         CAST(
             RIGHT(
                 listing_url,
@@ -10,7 +10,7 @@ WITH BASE AS (
         host_id AS HOST_ID,
         DATE_DIFF(
             CURRENT_DATE(),
-            host_since,
+            PARSE_DATE('%Y-%m-%d',  host_since),
             YEAR
         ) AS HOST_YEAR_OF_EXP,
         CAST(
@@ -21,9 +21,9 @@ WITH BASE AS (
         calculated_host_listings_count AS HOST_LISTING_COUNT,
         latitude AS LISTING_LATITUDE,
         longitude AS LISTING_LONGITUDE,
-        price AS LISTING_PRICE,
-        PERCENTILE_CONT(price, 0.50) OVER() AS LISTING_PRICE_2Q,
-        PERCENTILE_CONT(price, 0.75) OVER() * 1.5 AS LISTING_PRICE_UPPER,
+        CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC) AS LISTING_PRICE,
+        PERCENTILE_CONT(CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC), 0.50) OVER() AS LISTING_PRICE_2Q,
+        PERCENTILE_CONT(CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC), 0.75) OVER() * 1.5 AS LISTING_PRICE_UPPER,
         ROUND((30 - availability_30) / 30 * 100, 0) AS LISTING_OCCUPANCY_RATE,
         number_of_reviews AS LISTING_REVIEW_COUNT,
         neighbourhood_cleansed AS LISTING_MUNICIPALITY
