@@ -2,6 +2,6 @@ version: 2
 
 sources:
   - name: raw_data
-    database: airbnb_raw_data
+    database: airbnb-host-analytics.airbnb_raw_data
     tables:
       - name: airbnb_raw
