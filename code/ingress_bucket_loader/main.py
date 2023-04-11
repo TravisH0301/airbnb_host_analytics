@@ -29,8 +29,15 @@ def load_data_to_gcs(request):
         # Load unzipped CSV dataset into dataframe
         df = pd.read_csv(file_path_csv)
         # Replace new lines with spaces
-        df= df.applymap(lambda x: x.replace("\r"," "))
-        df= df.applymap(lambda x: x.replace("\n"," "))
+        """This is to prevent the loading error when reading CSV files in Big Query."""
+        change_cols = [
+            "name",
+            "description",
+            "neighborhood_overview",
+            "host_about"
+        ]
+        for col in change_cols:
+            df[col]= df[col].apply(lambda x: x.replace("\r"," ").replace("\n"," "))
 
         # Upload data to GCS bucket
         storage_client = storage.Client()

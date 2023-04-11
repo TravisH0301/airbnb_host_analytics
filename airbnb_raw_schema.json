@@ -1,0 +1,302 @@
+[
+    {
+        "name": "id",
+        "type": "INTEGER"
+    },
+    {
+        "name": "listing_url",
+        "type": "STRING"
+    },
+    {
+        "name": "scrape_id",
+        "type": "INTEGER"
+    },
+    {
+        "name": "last_scraped",
+        "type": "STRING"
+    },
+    {
+        "name": "source",
+        "type": "STRING"
+    },
+    {
+        "name": "name",
+        "type": "STRING"
+    },
+    {
+        "name": "description",
+        "type": "STRING"
+    },
+    {
+        "name": "neighborhood_overview",
+        "type": "STRING"
+    },
+    {
+        "name": "picture_url",
+        "type": "STRING"
+    },
+    {
+        "name": "host_id",
+        "type": "INTEGER"
+    },
+    {
+        "name": "host_url",
+        "type": "STRING"
+    },
+    {
+        "name": "host_name",
+        "type": "STRING"
+    },
+    {
+        "name": "host_since",
+        "type": "STRING"
+    },
+    {
+        "name": "host_location",
+        "type": "STRING"
+    },
+    {
+        "name": "host_about",
+        "type": "STRING"
+    },
+    {
+        "name": "host_response_time",
+        "type": "STRING"
+    },
+    {
+        "name": "host_response_rate",
+        "type": "STRING"
+    },
+    {
+        "name": "host_acceptance_rate",
+        "type": "STRING"
+    },
+    {
+        "name": "host_is_superhost",
+        "type": "STRING"
+    },
+    {
+        "name": "host_thumbnail_url",
+        "type": "STRING"
+    },
+    {
+        "name": "host_picture_url",
+        "type": "STRING"
+    },
+    {
+        "name": "host_neighbourhood",
+        "type": "STRING"
+    },
+    {
+        "name": "host_listings_count",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "host_total_listings_count",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "host_verifications",
+        "type": "STRING"
+    },
+    {
+        "name": "host_has_profile_pic",
+        "type": "STRING"
+    },
+    {
+        "name": "host_identity_verified",
+        "type": "STRING"
+    },
+    {
+        "name": "neighbourhood",
+        "type": "STRING"
+    },
+    {
+        "name": "neighbourhood_cleansed",
+        "type": "STRING"
+    },
+    {
+        "name": "neighbourhood_group_cleansed",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "latitude",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "longitude",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "property_type",
+        "type": "STRING"
+    },
+    {
+        "name": "room_type",
+        "type": "STRING"
+    },
+    {
+        "name": "accommodates",
+        "type": "INTEGER"
+    },
+    {
+        "name": "bathrooms",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "bathrooms_text",
+        "type": "STRING"
+    },
+    {
+        "name": "bedrooms",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "beds",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "amenities",
+        "type": "STRING"
+    },
+    {
+        "name": "price",
+        "type": "STRING"
+    },
+    {
+        "name": "minimum_nights",
+        "type": "INTEGER"
+    },
+    {
+        "name": "maximum_nights",
+        "type": "INTEGER"
+    },
+    {
+        "name": "minimum_minimum_nights",
+        "type": "INTEGER"
+    },
+    {
+        "name": "maximum_minimum_nights",
+        "type": "INTEGER"
+    },
+    {
+        "name": "minimum_maximum_nights",
+        "type": "INTEGER"
+    },
+    {
+        "name": "maximum_maximum_nights",
+        "type": "INTEGER"
+    },
+    {
+        "name": "minimum_nights_avg_ntm",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "maximum_nights_avg_ntm",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "calendar_updated",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "has_availability",
+        "type": "STRING"
+    },
+    {
+        "name": "availability_30",
+        "type": "INTEGER"
+    },
+    {
+        "name": "availability_60",
+        "type": "INTEGER"
+    },
+    {
+        "name": "availability_90",
+        "type": "INTEGER"
+    },
+    {
+        "name": "availability_365",
+        "type": "INTEGER"
+    },
+    {
+        "name": "calendar_last_scraped",
+        "type": "STRING"
+    },
+    {
+        "name": "number_of_reviews",
+        "type": "INTEGER"
+    },
+    {
+        "name": "number_of_reviews_ltm",
+        "type": "INTEGER"
+    },
+    {
+        "name": "number_of_reviews_l30d",
+        "type": "INTEGER"
+    },
+    {
+        "name": "first_review",
+        "type": "STRING"
+    },
+    {
+        "name": "last_review",
+        "type": "STRING"
+    },
+    {
+        "name": "review_scores_rating",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "review_scores_accuracy",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "review_scores_cleanliness",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "review_scores_checkin",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "review_scores_communication",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "review_scores_location",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "review_scores_value",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "license",
+        "type": "FLOAT64"
+    },
+    {
+        "name": "instant_bookable",
+        "type": "STRING"
+    },
+    {
+        "name": "calculated_host_listings_count",
+        "type": "INTEGER"
+    },
+    {
+        "name": "calculated_host_listings_count_entire_homes",
+        "type": "INTEGER"
+    },
+    {
+        "name": "calculated_host_listings_count_private_rooms",
+        "type": "INTEGER"
+    },
+    {
+        "name": "calculated_host_listings_count_shared_rooms",
+        "type": "INTEGER"
+    },
+    {
+        "name": "reviews_per_month",
+        "type": "FLOAT64"
+    }
+]
