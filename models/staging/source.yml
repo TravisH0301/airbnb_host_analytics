@@ -4,4 +4,4 @@ sources:
   - name: raw_data
     database: airbnb_raw_data
     tables:
-      - name: airbnb_raw_data
+      - name: airbnb_raw
