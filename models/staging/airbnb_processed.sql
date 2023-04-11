@@ -4,7 +4,7 @@ WITH BASE AS (
         CAST(
             RIGHT(
                 listing_url,
-                POSITION('/' IN REVERSE(listing_url)) - 1
+                STRPOS('/' IN REVERSE(listing_url)) - 1
             ) AS INT64
         ) AS LISTING_ID,
         host_id AS HOST_ID,
