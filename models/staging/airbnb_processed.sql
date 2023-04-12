@@ -28,8 +28,7 @@ WITH BASE AS (
         number_of_reviews AS LISTING_REVIEW_COUNT,
         neighbourhood_cleansed AS LISTING_MUNICIPALITY
     FROM {{ source('raw_data', 'airbnb_raw') }}
-    WHERE
-        1 = 1
+    WHERE 1 = 1
         AND host_identity_verified = 't'
         AND availability_60 <> 0
         AND availability_90 <> 0
@@ -87,7 +86,6 @@ SELECT
     CURRENT_DATETIME() AS LOAD_DATETIME
 FROM
     BASE
-WHERE
-    1 = 1
+WHERE 1 = 1
     AND LISTING_PRICE >= LISTING_PRICE_2Q
     AND LISTING_PRICE <= LISTING_PRICE_UPPER
