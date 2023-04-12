@@ -3,5 +3,6 @@
 terraform/*
 !*.tf
 test.py
+todo.txt
 
 
