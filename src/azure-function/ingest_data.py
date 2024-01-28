@@ -6,26 +6,25 @@
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
 import requests
-
-import pandas as pd
 import shutil
 import gzip
+import io
+
+import pandas as pd
 
 
 # Download data file
 url = 'http://data.insideairbnb.com/australia/vic/melbourne/2023-03-13/data/listings.csv.gz'
-response = requests.get(url, stream=True)
+response = requests.get(url)
 
-# Unzip file
-with open('listings.csv.gz', 'wb') as f:
-    response.raw.decode_content = True
-    shutil.copyfileobj(response.raw, f)
+# Use BytesIO for in-memory file handling
+gzip_file = io.BytesIO(response.content)
 
-with gzip.open('listings.csv.gz', 'rb') as f_in:
-    with open('listings.csv', 'wb') as f_out:
-        shutil.copyfileobj(f_in, f_out)
-
-# Load unzipped CSV dataset into dataframe
-df = pd.read_csv('listings.csv')
-
+# Unzip file and load into a DataFrame
+with gzip.open(gzip_file, 'rt') as f_in:  # 'rt' mode for text reading
+    df = pd.read_csv(f_in)
 print(df.head())
+
+
+if __name__ == "__main__":
+    print("hello")
