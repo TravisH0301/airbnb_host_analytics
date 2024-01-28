@@ -1,11 +1,17 @@
 import azure.functions as func
 import logging
 
+from ingest_data import main
+
+
 app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
 
 @app.route(route="load_raw_data")
 def load_raw_data(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
+
+    # Run main function to fetch and load data into ADLS
+    main()
 
     name = req.params.get('name')
     if not name:
