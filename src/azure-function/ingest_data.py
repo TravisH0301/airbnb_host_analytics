@@ -6,7 +6,6 @@
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
 import requests
-import shutil
 import gzip
 import yaml
 import io
@@ -103,7 +102,7 @@ def upload_file(file, file_name, directory_client):
 
 def main():
     # Load Azure storage account credentials
-    with open("./src/azure-function/cred.yaml") as f:
+    with open("./cred.yaml") as f:
         conf = yaml.safe_load(f)
         account_name = conf["account_name"]
         account_key = conf["account_key"]
