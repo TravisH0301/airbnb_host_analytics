@@ -80,7 +80,7 @@ def create_dir_client(
 
 # Function to upload data to ADLS
 def upload_file(file, file_name, directory_client):
-    """This uploads the given byte file into the
+    """This uploads the given bytes file into the
     ADLS directory.
     
     Parameters
@@ -108,7 +108,7 @@ def main():
         account_name = conf["account_name"]
         account_key = conf["account_key"]
 
-    # Fetch Airbnb listing data via API
+    # Fetch Airbnb listing dataset via API
     url = 'http://data.insideairbnb.com/australia/vic/melbourne/2023-03-13/data/listings.csv.gz'
     df = fetch_data(url)
 
@@ -122,7 +122,7 @@ def main():
         directory_name
     )
 
-    # Upload dataset as a parquet file
+    # Upload dataset to ADLS as a parquet file
     file_name = "raw_dataset.parquet"
     parquet_file = df.to_parquet()
     upload_file(parquet_file, file_name, directory_client)
