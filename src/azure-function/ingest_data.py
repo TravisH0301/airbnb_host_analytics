@@ -13,18 +13,41 @@ import io
 import pandas as pd
 
 
-# Download data file
-url = 'http://data.insideairbnb.com/australia/vic/melbourne/2023-03-13/data/listings.csv.gz'
-response = requests.get(url)
+# Function to retrieve Airbnb data
+def retrieve_data(url): 
+    """This function retrieves Airbnb data using
+    the given URL, and returns it as a dataframe.
+    
+    Parameters
+    ----------
+    url: str
+        Airbnb data API URL
+        
+    Returns
+    -------
+    df: pandas dataframe
+        Retrieved dataset
+    """
+    # Download data file
+    response = requests.get(url)
 
-# Use BytesIO for in-memory file handling
-gzip_file = io.BytesIO(response.content)
+    # Use BytesIO for in-memory file handling
+    gzip_file = io.BytesIO(response.content)
 
-# Unzip file and load into a DataFrame
-with gzip.open(gzip_file, 'rt') as f_in:  # 'rt' mode for text reading
-    df = pd.read_csv(f_in)
-print(df.head())
+    # Unzip file and load into a DataFrame
+    with gzip.open(gzip_file, 'rb') as f_in:
+        df = pd.read_csv(f_in)
+
+    return df
+
+
+def main():
+    url = 'http://data.insideairbnb.com/australia/vic/melbourne/2023-03-13/data/listings.csv.gz'
+    df = retrieve_data(url)
+    print(df.head())
 
 
 if __name__ == "__main__":
-    print("hello")
+    main()
+
+    
