@@ -36,7 +36,7 @@ def fetch_data(url):
     gzip_file = io.BytesIO(response.content)
 
     # Unzip file and load into a DataFrame
-    with gzip.open(gzip_file, 'rb') as f_in:
+    with gzip.open(gzip_file, "rb") as f_in:
         df = pd.read_csv(f_in)
 
     return df
@@ -101,17 +101,33 @@ def upload_file(file, file_name, directory_client):
 
 
 def main():
+    print("Process has started.")
+    
+    # Fetch Airbnb listing datasets via API from 2023 March to 2023 June
+    print("Fetching Airbnb listing datasets...")
+    df_list = []
+    snapshot_dates = [
+        "2023-03-13",
+        "2023-04-09",
+        "2023-05-13",
+        "2023-06-06"
+    ]
+    for snapshot_date in snapshot_dates:
+        print(f"Fetching snapshot date {snapshot_date}...")
+        url = f"http://data.insideairbnb.com/australia/vic/melbourne/{snapshot_date}" \
+            "/data/listings.csv.gz"
+        df = fetch_data(url)
+        df_list.append(df)
+
     # Load Azure storage account credentials
+    print("Loading Azure credentials...")
     with open("./cred.yaml") as f:
         conf = yaml.safe_load(f)
         account_name = conf["account_name"]
         account_key = conf["account_key"]
 
-    # Fetch Airbnb listing dataset via API
-    url = 'http://data.insideairbnb.com/australia/vic/melbourne/2023-03-13/data/listings.csv.gz'
-    df = fetch_data(url)
-
     # Create Data Lake directory client
+    print("Creating Data Lake directory client...")
     container_name = "airbnb-host-analytics"
     directory_name = "bronze"
     directory_client = create_dir_client(
@@ -122,9 +138,14 @@ def main():
     )
 
     # Upload dataset to ADLS as a parquet file
-    file_name = "raw_dataset.parquet"
-    parquet_file = df.to_parquet()
-    upload_file(parquet_file, file_name, directory_client)
+    print("Uploading datasets to ADLS...")
+    for i, dataset in enumerate(df_list):
+        print(f"Uploading snapshot date {snapshot_date[i]}...")
+        file_name = f"raw_dataset_{snapshot_dates[i]}.parquet"
+        parquet_file = dataset.to_parquet()
+        upload_file(parquet_file, file_name, directory_client)
+    
+    print("Process has completed.")
 
 
 if __name__ == "__main__":
