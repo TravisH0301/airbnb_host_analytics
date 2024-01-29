@@ -106,3 +106,24 @@ def load_df_to_adls(
     target_location = f"abfss://{container_name}@{storage_account_name}" \
         f".dfs.core.windows.net/{file_path}"
     df.write.format(file_type).mode(save_mode).save(target_location)
+
+
+def process_data(spark, df, query):
+    """This function processes the given dataset
+    using Spark SQL and returns a dataframe.
+    
+    Parameters
+    ----------
+    spark: object
+        Spark session
+    df: dataframe
+        Spark dataframe
+    query: str
+        SQL query to execute
+        
+    Returns
+    -------
+    Spark dataframe
+    """
+    df.createOrReplaceTempView("dataset")
+    return spark.sql(query)

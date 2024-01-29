@@ -62,27 +62,6 @@ def load_compile_data(
     return reduce(DataFrame.unionAll, df_raw_list)
 
 
-def process_data(df, query):
-    """This function processes the given dataset
-    using Spark SQL and returns a dataframe.
-    
-    Parameters
-    ----------
-    df: dataframe
-        Spark dataframe
-    query: str
-        SQL query to execute
-        
-    Returns
-    -------
-    dataframe
-    """
-    df.createOrReplaceTempView("airbnb_raw")
-    df_processed = spark.sql(query)
-
-    return df_processed
-
-
 def main():
     print("Process has started.")
 
@@ -136,7 +115,7 @@ def main():
         conf = yaml.safe_load(f)
         query = conf["data_processing"]["airbnb_processed"]
     ## Apply processing query
-    df_airbnb_processed = process_data(df_raw_compiled, query)
+    df_airbnb_processed = utils.process_data(spark, df_raw_compiled, query)
 
     # Store processed dataset as delta lake table in silver layer
     print("Saving Delta Lake tables in silver layer...")

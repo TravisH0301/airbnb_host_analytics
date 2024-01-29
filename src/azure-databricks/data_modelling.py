@@ -43,6 +43,9 @@ def main():
     - about_word_count: Host about description word count
     - year_of_exp: Years of experience in hosting
     - listing_count: Number of property listed
+    - start_date: SCD type 2 start date
+    - end_date: SCD type 2 end date
+    - current_ind: Indicator of current record
     
     And this dimension follows SCD type 2.
     """
@@ -56,6 +59,9 @@ def main():
     - longitude: Latitude
     - price: Listing price
     - review_count: Number of reviews
+    - start_date: SCD type 2 start date
+    - end_date: SCD type 2 end date
+    - current_ind: Indicator of current record
     
     And this dimension follows SCD type 2.
     """
