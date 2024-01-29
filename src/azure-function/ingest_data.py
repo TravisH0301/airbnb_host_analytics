@@ -14,7 +14,6 @@ import pandas as pd
 from azure.storage.filedatalake import DataLakeServiceClient
 
 
-# Function to fetch Airbnb data
 def fetch_data(url): 
     """This function fetches Airbnb data using
     the given URL, and returns it as a dataframe.
@@ -42,7 +41,6 @@ def fetch_data(url):
     return df
 
 
-# Function to create Data Lake directory client
 def create_dir_client(
         account_name,
         account_key,
@@ -77,9 +75,8 @@ def create_dir_client(
     return file_system_client.get_directory_client(directory=directory_name)
             
 
-# Function to upload data to ADLS
 def upload_file(file, file_name, directory_client):
-    """This uploads the given bytes file into the
+    """This function uploads the given bytes file into the
     ADLS directory.
     
     Parameters
