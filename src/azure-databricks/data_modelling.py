@@ -79,7 +79,7 @@ def main():
     """Occupancy fact table contains occupancy rate within the 
     next 30 days of the listing properties with the following
     attributes:
-    - ID: Unique identifiation
+    - OCCUPANCY_ID: Unique identifiation
     - LISTING_ID: Listing identification
     - HOST_ID: Host identification
     - OCCUPANCY_RATE: Occupancy rate within next 30 days

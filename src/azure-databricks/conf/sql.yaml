@@ -160,7 +160,12 @@ airbnb_dim_listing: >
 
 airbnb_fact_occupancy: >
     SELECT DISTINCT
-        ROW_NUMBER() OVER() AS ID,
+        CONCAT_WS(
+            '_',
+            LISTING_ID,
+            HOST_ID,
+            CAST(DATE_FORMAT(SNAPSHOT_DATE, 'yyyyMM') AS INT)
+        ) AS OCCUPANCY_ID,
         LISTING_ID,
         HOST_ID,
         OCCUPANCY_RATE,
