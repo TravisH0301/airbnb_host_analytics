@@ -25,13 +25,6 @@ with DAG(
     }
 ) as dag:
     
-    # Task to test
-    test = BashOperator(
-        task_id="test",
-        bash_command="echo hello world",
-        dag=dag
-    )
-
     # Task to process raw datasets and load compiled dataset to bronze layer
     data_processing = DatabricksRunNowOperator(
         task_id = 'data_processing',
@@ -41,6 +34,5 @@ with DAG(
     
     # Define task dependecies
     (
-        test
-        >> data_processing
+        data_processing
     )
