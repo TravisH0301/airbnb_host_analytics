@@ -1,3 +1,11 @@
+###############################################################################
+# Name: utils.py
+# Description: This script contains utility modules used in the data processing.
+# Author: Travis Hong
+# Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
+###############################################################################
+
+
 def set_azure_storage_config(spark, dbutils):
     """This function sets the Azure storage configuration
     in Spark using Azure key vault.
