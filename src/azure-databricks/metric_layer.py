@@ -72,6 +72,7 @@ def main():
     - AVERAGE_OCCUPANCY_RATE: Average occupancy rate of host's listings
     - SNAPSHOT_YEAR_MONTH: Record snapshot year month in YYYYMM
     """
+    print("Creating metric layer table...")
     query_name = "airbnb_metric_host_occupancy"
     query = utils.get_query(query_name)
     df_airbnb_metric = spark.sql(query)
