@@ -15,7 +15,6 @@ import pandas as pd
 from pyspark.sql import DataFrame
 
 
-# Define function to load datasets
 def load_compile_data(snapshot_dates: list, source_location: str):
     """This function loads the raw Airbnb datasets from 
     the bronze layer of the ADLS. The datasets are then
@@ -41,7 +40,6 @@ def load_compile_data(snapshot_dates: list, source_location: str):
     return reduce(DataFrame.unionAll, df_raw_list)
 
 
-# Define function to process dataset
 def process_data(df, query):
     """This function processes the given dataset
     using Spark SQL and returns a dataframe.
