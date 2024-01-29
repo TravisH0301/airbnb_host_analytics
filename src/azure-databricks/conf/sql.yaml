@@ -96,7 +96,7 @@ data_processing:
         AND LISTING_PRICE >= LISTING_PRICE_2Q
         AND LISTING_PRICE <= LISTING_PRICE_UPPER
 
-dimensional_modelling:
+data_modelling:
   airbnb_dim_host: >
     WITH BASE AS (
         SELECT DISTINCT
