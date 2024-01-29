@@ -140,9 +140,20 @@ def main():
 
     # Store processed dataset as delta lake table in silver layer
     print("Saving Delta Lake tables in silver layer...")
-    target_location = f"abfss://airbnb-host-analytics@{storage_account_name}" \
-        ".dfs.core.windows.net/silver/airbnb_processed"
-    df_airbnb_processed.write.format("delta").mode("overwrite").save(target_location)
+    file_path, file_type, save_mode = (
+        "silver/airbnb_processed",
+        "delta",
+        "overwrite"
+    )
+    utils.load_df_to_adls(
+        spark,
+        dbutils,
+        df_airbnb_processed,
+        container_name,
+        file_path,
+        file_type,
+        save_mode
+    )
     
     print("Process has completed.")
 
