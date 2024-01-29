@@ -51,4 +51,5 @@ with DAG(
     (
         data_processing
         >> data_modelling
+        >> metric_layer
     )
