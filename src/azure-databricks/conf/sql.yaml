@@ -199,7 +199,7 @@ airbnb_metric_host_occupancy: >
             APPROX_PERCENTILE(HOST.ABOUT_WORD_COUNT, 0.75) OVER() * 1.5 AS ABOUT_WORD_COUNT_UPPER,
             AVG(FACT.OCCUPANCY_RATE) OVER (PARTITION BY FACT.HOST_ID) AS AVERAGE_OCCUPANCY_RATE,
             FACT.SNAPSHOT_YEAR_MONTH
-        FROM dataset FACT
+        FROM airbnb_fact_occupancy FACT
         INNER JOIN airbnb_dim_host HOST
             ON FACT.HOST_ID = HOST.HOST_ID
         INNER JOIN airbnb_dim_listing LISTING
