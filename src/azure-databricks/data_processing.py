@@ -14,16 +14,34 @@ from functools import reduce
 import pandas as pd
 from pyspark.sql import DataFrame
 
-from utils.utils import set_azure_storage_config
+from utils import utils
 
 
-def load_compile_data(snapshot_dates: list, source_location: str):
+def load_compile_data(
+        spark,
+        dbutils,
+        container_name,
+        file_path,
+        file_type,
+        snapshot_dates,
+        source_location
+    ):
     """This function loads the raw Airbnb datasets from 
     the bronze layer of the ADLS. The datasets are then
     compiled and returned as a dataframe.
     
     Parameters
     ----------
+    spark: object
+        Spark session
+    dbutils: object
+        Databricks util object
+    container_name: str
+        ADLS container name
+    file_path: str
+        Source file path in ADLS
+    file_type: str
+        Dataset storage format - e.g., parquet or delta
     snapshot_date: list
         list of snapshot dates in string
     source_location: str
@@ -35,6 +53,13 @@ def load_compile_data(snapshot_dates: list, source_location: str):
     """
     df_raw_list = []
     for snapshot_date in snapshot_dates:
+        df_raw = utils.load_data_to_df(
+            spark,
+            dbutils,
+            container_name,
+            file_path.format(snapshot_date),
+            file_type
+        )
         df_raw = spark.read.format("parquet") \
             .load(source_location.format(snapshot_date))
         df_raw_list.append(df_raw)
@@ -68,7 +93,7 @@ def main():
 
     # Configure storage account credentials
     print("Configuring storage account credentials...")
-    set_azure_storage_config(spark, dbutils)
+    utils.set_azure_storage_config(spark, dbutils)
 
     # Load raw Airbnb datasets
     print("Loading raw Airbnb datasets...")
@@ -78,8 +103,11 @@ def main():
         "2023-05-13",
         "2023-06-06"
     ]
-    source_location = f"abfss://airbnb-host-analytics@{storage_account_name}" \
-        ".dfs.core.windows.net/bronze/raw_dataset_{}.parquet"
+    container_name, file_path, file_type = (
+        "airbnb-host-analytics",
+        "bronze/raw_dataset_{}",
+        "parquet"
+    )
     df_raw_compiled = load_compile_data(snapshot_dates, source_location)
 
     # Process raw dataset
