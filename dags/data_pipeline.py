@@ -6,8 +6,9 @@
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
 from datetime import datetime
-from airflow import DAG
 
+from airflow import DAG
+from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
 from airflow.operators.bash import BashOperator
 
 
@@ -24,22 +25,22 @@ with DAG(
     }
 ) as dag:
     
-    # Task to 
+    # Task to test
     test = BashOperator(
         task_id="test",
         bash_command="echo hello world",
         dag=dag
     )
 
-    # Task to 
-    test2 = BashOperator(
-        task_id="test2",
-        bash_command="echo bye world",
-        dag=dag
+    # Task to process raw datasets and load compiled dataset to bronze layer
+    data_processing = DatabricksRunNowOperator(
+        task_id = 'data_processing',
+        databricks_conn_id = 'databricks_default',
+        job_id = 280918839142015
     )
-
+    
     # Define task dependecies
     (
         test
-        >> test2
+        >> data_processing
     )
