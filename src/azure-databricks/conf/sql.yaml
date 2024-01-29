@@ -173,7 +173,7 @@ airbnb_fact_occupancy: >
     FROM dataset
 
 
-airbnb_metric_host_occupancy: <
+airbnb_metric_host_occupancy: >
     WITH BASE AS (
         SELECT
             FACT.HOST_ID,
