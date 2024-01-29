@@ -23,12 +23,8 @@ def get_query(query_name):
     query: str
         Retrieved query
     """
-    # Change directory to conf
-    new_path = os.path.normpath(os.path.join(os.getcwd(), "..", "conf"))
-    os.chdir(new_path)
-
     # Retrieve query from conf file
-    with open("sql.yaml") as f:
+    with open("./conf/sql.yaml") as f:
         conf = yaml.safe_load(f)
         query = conf[query_name]
 
