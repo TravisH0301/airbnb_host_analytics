@@ -106,7 +106,7 @@ def main():
     ## Load data processing query
     with open("./src/azure-databricks/sql.yaml") as f:
         conf = yaml.safe_load(f)
-        query = conf["bronze_to_silver"]["airbnb_processed"]
+        query = conf["data_processing"]["airbnb_processed"]
     ## Apply processing query
     df_airbnb_processed = process_data(df_raw_compiled, query)
 
