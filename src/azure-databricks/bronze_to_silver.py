@@ -1,15 +1,44 @@
 ###############################################################################
 # Name: bronze_to_silver.py
-# Description: This script creates a dimensional data model from raw Airbnb
-#              dataset and stores it as Delta Lake tables in the silver layer
-#              of the ADLS gen2.
+# Description: This script processes the raw Airbnb datasets and load the 
+#              compiled dataset into the silver layer of ADLS gen2
+#              as a delta lake table.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
+import os
+os.system("pip install pyyaml")
+import yaml
+
+
+# Define function to load datasets
+def load_compile_data(snapshot_dates: list, source_location: str):
+    """This function loads the raw Airbnb datasets from 
+    the bronze layer of the ADLS. The datasets are then
+    compiled and returned as a dataframe.
+    
+    Parameters
+    ----------
+    snapshot_date: list
+        list of snapshot dates in string
+    source_location: str
+        Source file location of ADLS
+        
+    Returns
+    -------
+    dataframe
+    """
+    df_raw_list = []
+    for snapshot_date in snapshot_dates:
+        df_raw = spark.read.format("parquet") \
+            .load(source_location.format(snapshot_date))
+        df_raw_list.append(df_raw)
+
+    return pd.concat(df_raw_list)
 
 
 # Define function to process dataset
-def process_data(df):
+def process_data(df, query):
     """This function processes the given dataset
     using Spark SQL and returns a dataframe.
     
@@ -17,142 +46,55 @@ def process_data(df):
     ----------
     df: dataframe
         Spark dataframe
+    query: str
+        SQL query to execute
         
     Returns
     -------
     dataframe
     """
-    df.createOrReplaceTempView("dataset")
-    df_airbnb_processed = spark.sql("""
-    WITH BASE AS (
-        SELECT
-            TO_DATE(last_scraped, 'yyyy-MM-dd') AS SNAPSHOT_DATE,
-            CAST(RIGHT(listing_url, POSITION('/' IN REVERSE(listing_url)) - 1) AS LONG) AS LISTING_ID,
-            host_id AS HOST_ID,
-            ROUND(
-                DATEDIFF(
-                    CURRENT_DATE,
-                    TO_DATE(host_since, 'yyyy-MM-dd')
-                ) / 365,
-                0
-            ) AS HOST_YEAR_OF_EXP,
-            CAST(
-                LENGTH(RTRIM(LTRIM(host_about)))
-                - LENGTH(REPLACE(RTRIM(LTRIM(host_about)), ' ', ''))
-                + 1 
-                AS NUMERIC
-            ) AS HOST_ABOUT_WORD_COUNT,
-            host_is_superhost AS IS_HOST_SUPERHOST,
-            host_has_profile_pic AS HAS_HOST_PROFILE_PHOTO,
-            calculated_host_listings_count AS HOST_LISTING_COUNT,
-            latitude AS LISTING_LATITUDE,
-            longitude AS LISTING_LONGITUDE,
-            CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC) AS LISTING_PRICE,
-            PERCENTILE_APPROX(
-                CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC),
-                0.50
-            ) OVER() AS LISTING_PRICE_2Q,
-            PERCENTILE_APPROX(
-                CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC),
-                0.75
-            ) OVER() * 1.5 AS LISTING_PRICE_UPPER,
-            ROUND((30 - CAST(availability_30 AS NUMERIC)) / 30 * 100, 0) AS LISTING_OCCUPANCY_RATE,
-            number_of_reviews AS LISTING_REVIEW_COUNT,
-            neighbourhood_cleansed AS LISTING_MUNICIPALITY
-        FROM dataset
-        WHERE 1=1
-            AND host_identity_verified = 't'
-            AND availability_60 <> 0
-            AND availability_90 <> 0
-            AND availability_365 <> 0
-            AND LOWER(neighbourhood_cleansed) IN (
-                'banyule',
-                'bayside',
-                'boroondara',
-                'brimbank',
-                'cardinia',
-                'casey',
-                'darebin',
-                'frankston',
-                'glen eira',
-                'greater dandenong',
-                'hobsons bay',
-                'hume',
-                'kingston',
-                'knox',
-                'manningham',
-                'maribyrnong',
-                'maroondah',
-                'melbourne',
-                'melton',
-                'monash',
-                'moonee valley',
-                'moreland',
-                'mornington peninsula',
-                'nillumbik',
-                'port phillip',
-                'stonnington',
-                'whitehorse',
-                'whittlesea',
-                'wyndham',
-                'yarra',
-                'yarra ranges'
-            )
-            AND LOWER(room_type) = 'entire home/apt'
-    )
-    SELECT
-        SNAPSHOT_DATE,
-        LISTING_ID,
-        HOST_ID,
-        HOST_YEAR_OF_EXP,
-        HOST_ABOUT_WORD_COUNT,
-        IS_HOST_SUPERHOST,
-        HAS_HOST_PROFILE_PHOTO,
-        HOST_LISTING_COUNT,
-        LISTING_LATITUDE,
-        LISTING_LONGITUDE,
-        LISTING_OCCUPANCY_RATE,
-        LISTING_PRICE,
-        LISTING_REVIEW_COUNT,
-        LISTING_MUNICIPALITY
-    FROM BASE
-    WHERE 1=1
-        AND LISTING_PRICE >= LISTING_PRICE_2Q
-        AND LISTING_PRICE <= LISTING_PRICE_UPPER
-    """)
+    df.createOrReplaceTempView("airbnb_raw")
+    df_processed = spark.sql(query)
 
-    return df_airbnb_processed
+    return df_processed
 
 
 def main():
     print("Process has started.")
     # Configure storage account credentials
     print("Configuring storage account credentials...")
-    storage_account_name = dbutils.secrets.get(scope="key-vault-secret",key="storage-account-name")
+    storage_account_name = dbutils.secrets.get(
+        scope="key-vault-secret",
+        key="storage-account-name"
+    )
     spark.conf.set(
         f"fs.azure.account.key.{storage_account_name}.dfs.core.windows.net",
         dbutils.secrets.get(scope="key-vault-secret",key="storage-account-key")
     )
 
-    # Define file paths
-    source_location = f"abfss://airbnb-host-analytics@{storage_account_name}.dfs.core.windows.net/bronze/raw_dataset.parquet"
-    target_location = f"abfss://airbnb-host-analytics@{storage_account_name}.dfs.core.windows.net/silver"
-
-    # Load raw Airbnb dataset
-    print("Loading raw Airbnb dataset...")
-    df_raw = spark.read.format("parquet").load(source_location)
+    # Load raw Airbnb datasets
+    print("Loading raw Airbnb datasets...")
+    snapshot_dates = [
+        "2023-03-13",
+        "2023-04-09",
+        "2023-05-13",
+        "2023-06-06"
+    ]
+    source_location = f"abfss://airbnb-host-analytics@{storage_account_name}" \
+        ".dfs.core.windows.net/bronze/raw_dataset_{}.parquet"
+    df_raw_compiled = load_compile_data(snapshot_dates, source_location)
 
     # Process raw dataset
     """
     The raw dataset is processed and filtered with the following conditions:
     - Host identity must be verified for valid hosts.
     - Room availability for next 60, 90 and 365 days must not be zero to ensure
-      only available listings are used.
+      only available listings are considered.
     - Municipality of the listing must be metropolitan municipalities to eliminate
       rural area effect.
     - Listing must be an entire home/apt to limit diversity of the listing type.
-    - Price must be within the range between median and upper limit to filter out
-      outliers and reduce price factor.
+    - Price must be within the range between median and upper limit (median + 1.5 IQR)
+      to filter out outliers and reduce price factor.
     
     *Metropolitan Melbourne municipalities: Banyule, Bayside, Boroondara, Brimbank,
     Cardinia, Casey, Darebin, Frankston, Glen Eira, Greater Dandenong, Hobsons Bay,
@@ -161,18 +103,17 @@ def main():
     Stonnington, Whitehorse, Whittlesea, Wyndham, Yarra, Yarra Ranges
     """
     print("Processing raw dataset...")
-    df_airbnb_processed = process_data(df_raw)
+    ## Load data processing query
+    with open("./src/azure-databricks/sql.yaml") as f:
+        conf = yaml.safe_load(f)
+        query = conf["bronze_to_silver"]["airbnb_processed"]
+    ## Apply processing query
+    df_airbnb_processed = process_data(df_raw_compiled, query)
 
-    # Create dimensional model
-    ## Host dimension table
-
-    ## Listing dimension table
-
-    ## Listing occupancy fact table
-    """"""
-
-    # Store data model as delta lake tables in silver layer
+    # Store processed dataset as delta lake table in silver layer
     print("Saving Delta Lake tables in silver layer...")
+    target_location = f"abfss://airbnb-host-analytics@{storage_account_name}" \
+        ".dfs.core.windows.net/silver/airbnb_processed"
     df_airbnb_processed.write.format("delta").mode("overwrite").save(target_location)
     print("Process has completed.")
 
