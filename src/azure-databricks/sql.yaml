@@ -1,5 +1,5 @@
-bronze_to_silver:
-  process_raw_data: >
+data_processing:
+  airbnb_processed: >
     WITH BASE AS (
         SELECT
             TO_DATE(last_scraped, 'yyyy-MM-dd') AS SNAPSHOT_DATE,
@@ -35,7 +35,7 @@ bronze_to_silver:
             ROUND((30 - CAST(availability_30 AS NUMERIC)) / 30 * 100, 0) AS LISTING_OCCUPANCY_RATE,
             number_of_reviews AS LISTING_REVIEW_COUNT,
             neighbourhood_cleansed AS LISTING_MUNICIPALITY
-        FROM dataset
+        FROM airbnb_raw
         WHERE 1=1
             AND host_identity_verified = 't'
             AND availability_60 <> 0
@@ -96,4 +96,111 @@ bronze_to_silver:
         AND LISTING_PRICE >= LISTING_PRICE_2Q
         AND LISTING_PRICE <= LISTING_PRICE_UPPER
 
-  test: "hello"
+dimensional_modelling:
+  airbnb_dim_host: >
+    WITH BASE AS (
+        SELECT DISTINCT
+            HOST_ID,
+            IS_HOST_SUPERHOST,
+            HAS_HOST_PROFILE_PHOTO,
+            HOST_ABOUT_WORD_COUNT,
+            HOST_YEAR_OF_EXP,
+            HOST_LISTING_COUNT
+        FROM airbnb_processed
+        WHERE 1=1
+    )
+    SELECT
+        HOST_ID,
+        CASE
+            WHEN IS_HOST_SUPERHOST = 't' THEN 'Y'
+            WHEN IS_HOST_SUPERHOST = 'f' THEN 'N'
+            ELSE NULL
+        END AS IS_HOST_SUPERHOST,
+        CASE
+            WHEN HAS_HOST_PROFILE_PHOTO = 't' THEN 'Y'
+            WHEN HAS_HOST_PROFILE_PHOTO = 'f' THEN 'N'
+            ELSE NULL
+        END AS HAS_HOST_PROFILE_PHOTO,
+        HOST_ABOUT_WORD_COUNT,
+        HOST_YEAR_OF_EXP,
+        HOST_LISTING_COUNT
+    FROM BASE
+
+  airbnb_dim_listing: >
+    SELECT DISTINCT
+        LISTING_ID,
+        LISTING_MUNICIPALITY,
+        LISTING_LATITUDE,
+        LISTING_LONGITUDE,
+        LISTING_PRICE,
+        LISTING_REVIEW_COUNT
+    FROM airbnb_processed
+
+  airbnb_fact_occupancy: >
+    SELECT DISTINCT
+        ROW_NUMBER() OVER() AS ID,
+        LISTING_ID,
+        HOST_ID,
+        LISTING_OCCUPANCY_RATE,
+        SNAPSHOT_DATE
+    FROM airbnb_processed
+
+metric_layer:
+  airbnb_metric_host_occupancy: <
+    WITH BASE AS (
+        SELECT
+            FACT.HOST_ID,
+            CASE
+                WHEN HOST.HOST_LISTING_COUNT > 1 THEN 'Y'
+                WHEN HOST.HOST_LISTING_COUNT = 1 THEN 'N'
+                ELSE NULL
+            END AS IS_MULTI_LISTING,
+            CASE
+                WHEN HOST.HOST_YEAR_OF_EXP = 0 THEN '0'
+                WHEN HOST.HOST_YEAR_OF_EXP > 0 AND HOST.HOST_YEAR_OF_EXP <= 4 THEN '0-4'
+                WHEN HOST.HOST_YEAR_OF_EXP > 4 AND HOST.HOST_YEAR_OF_EXP <= 7 THEN '4-7'
+                WHEN HOST.HOST_YEAR_OF_EXP > 7 AND HOST.HOST_YEAR_OF_EXP <= 10 THEN '7-10'
+                WHEN HOST.HOST_YEAR_OF_EXP > 10 THEN '>10'
+                ELSE NULL
+            END AS YEAR_OF_EXP_CATEGORY,
+            HOST.HAS_HOST_PROFILE_PHOTO AS HAS_PROFILE_PHOTO,
+            HOST.IS_HOST_SUPERHOST AS IS_SUPERHOST,
+            SUM(LISTING.LISTING_REVIEW_COUNT) OVER(PARTITION BY FACT.HOST_ID) AS TOTAL_REVIEW_COUNT,
+            HOST.HOST_ABOUT_WORD_COUNT,
+            QUANTILE_CONT(HOST.HOST_ABOUT_WORD_COUNT, 0.50) OVER() AS HOST_ABOUT_WORD_COUNT_2Q,
+            QUANTILE_CONT(HOST.HOST_ABOUT_WORD_COUNT, 0.75) OVER() AS HOST_ABOUT_WORD_COUNT_3Q,
+            QUANTILE_CONT(HOST.HOST_ABOUT_WORD_COUNT, 0.75) OVER() * 1.5 AS HOST_ABOUT_WORD_COUNT_UPPER,
+            FACT.LISTING_OCCUPANCY_RATE AS OCCUPANCY_RATE,
+            FACT.SNAPSHOT_DATE
+        FROM airbnb_fact_occupancy FACT
+        INNER JOIN airbnb_dim_host HOST 
+            ON FACT.HOST_ID = HOST.HOST_ID
+        INNER JOIN airbnb_dim_listing LISTING
+            ON FACT.LISTING_ID = LISTING.LISTING_ID
+    )
+    SELECT
+        HOST_ID,
+        IS_MULTI_LISTING,
+        YEAR_OF_EXP_CATEGORY,
+        HAS_PROFILE_PHOTO,
+        IS_SUPERHOST,
+        CASE
+            WHEN TOTAL_REVIEW_COUNT = 0 THEN '0'
+            WHEN TOTAL_REVIEW_COUNT > 0 AND TOTAL_REVIEW_COUNT <= 10 THEN '1-10'
+            WHEN TOTAL_REVIEW_COUNT > 10 AND TOTAL_REVIEW_COUNT <= 50 THEN '10-50'
+            WHEN TOTAL_REVIEW_COUNT > 50 AND TOTAL_REVIEW_COUNT <= 100 THEN '50-100'
+            WHEN TOTAL_REVIEW_COUNT > 100 THEN '>100'
+        END AS TOTAL_REVIEW_CATEGORY,
+        CASE
+            WHEN HOST_ABOUT_WORD_COUNT = 0 THEN 'No Description'
+            WHEN HOST_ABOUT_WORD_COUNT > 0
+                AND HOST_ABOUT_WORD_COUNT <= HOST_ABOUT_WORD_COUNT_2Q THEN 'Short'
+            WHEN HOST_ABOUT_WORD_COUNT > HOST_ABOUT_WORD_COUNT_2Q
+                AND HOST_ABOUT_WORD_COUNT <= HOST_ABOUT_WORD_COUNT_3Q THEN 'Concise'
+            WHEN HOST_ABOUT_WORD_COUNT > HOST_ABOUT_WORD_COUNT_3Q
+                AND HOST_ABOUT_WORD_COUNT <= HOST_ABOUT_WORD_COUNT_UPPER THEN 'Detailed'
+            WHEN HOST_ABOUT_WORD_COUNT > HOST_ABOUT_WORD_COUNT_UPPER THEN 'Lengthy'
+        END AS HOST_ABOUT_CATEGORY,
+        OCCUPANCY_RATE,
+        SNAPSHOT_DATE
+    FROM BASE    
