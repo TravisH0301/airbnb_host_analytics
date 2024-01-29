@@ -6,9 +6,6 @@
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
-import os
-os.system("pip install pyyaml")
-import yaml
 from functools import reduce
 
 import pandas as pd
