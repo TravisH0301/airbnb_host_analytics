@@ -102,7 +102,7 @@ def upload_file(file, file_name, directory_client):
 
 def main():
     print("Process has started.")
-    
+
     # Fetch Airbnb listing datasets via API from 2023 March to 2023 June
     print("Fetching Airbnb listing datasets...")
     df_list = []
@@ -140,7 +140,7 @@ def main():
     # Upload dataset to ADLS as a parquet file
     print("Uploading datasets to ADLS...")
     for i, dataset in enumerate(df_list):
-        print(f"Uploading snapshot date {snapshot_date[i]}...")
+        print(f"Uploading snapshot date {snapshot_dates[i]}...")
         file_name = f"raw_dataset_{snapshot_dates[i]}.parquet"
         parquet_file = dataset.to_parquet()
         upload_file(parquet_file, file_name, directory_client)
