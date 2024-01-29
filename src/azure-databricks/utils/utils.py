@@ -39,6 +39,7 @@ def set_azure_storage_config(spark, dbutils):
 
     return storage_account_name
 
+
 def load_data_to_df(spark, dbutils, container_name, file_path, file_type):
     """This function reads a dataset from the given
     ADLS source file location and returns as a 
@@ -67,3 +68,41 @@ def load_data_to_df(spark, dbutils, container_name, file_path, file_type):
     
     return spark.read.format(file_type).load(source_location)
 
+
+def load_df_to_adls(
+        spark,
+        dbutils,
+        df,
+        container_name,
+        file_path,
+        file_type,
+        save_mode
+    ):
+    """This function loads Spark dataframe
+    into the ADLS gen2.
+    
+    Parameters
+    ----------
+    spark: object
+        Spark session
+    dbutils: object
+        Databricks util object
+    df: Spark dataframe
+        Spark dataframe to load
+    container_name: str
+        ADLS container name
+    file_path: str
+        Source file path in ADLS
+    file_type: str
+        Dataset storage format - e.g., parquet or delta
+    save_mode: str
+        Spark dataframe save mode - e.g., append, ignore, overwrite
+
+    Returns
+    -------
+    None
+    """
+    storage_account_name = set_azure_storage_config(spark, dbutils)
+    target_location = f"abfss://{container_name}@{storage_account_name}" \
+        f".dfs.core.windows.net/{file_path}"
+    df.write.format(file_type).mode(save_mode).save(target_location)

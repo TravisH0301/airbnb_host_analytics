@@ -100,7 +100,7 @@ def main():
     ]
     container_name, file_path, file_type = (
         "airbnb-host-analytics",
-        "bronze/raw_dataset_{}",
+        "bronze/raw_dataset_{}.parquet",
         "parquet"
     )
     df_raw_compiled = load_compile_data(
