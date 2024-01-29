@@ -10,30 +10,30 @@ airbnb_processed: >
                     TO_DATE(host_since, 'yyyy-MM-dd')
                 ) / 365,
                 0
-            ) AS HOST_YEAR_OF_EXP,
+            ) AS YEAR_OF_EXP,
             CAST(
                 LENGTH(RTRIM(LTRIM(host_about)))
                 - LENGTH(REPLACE(RTRIM(LTRIM(host_about)), ' ', ''))
                 + 1 
                 AS NUMERIC
-            ) AS HOST_ABOUT_WORD_COUNT,
-            host_is_superhost AS IS_HOST_SUPERHOST,
-            host_has_profile_pic AS HAS_HOST_PROFILE_PHOTO,
-            calculated_host_listings_count AS HOST_LISTING_COUNT,
-            latitude AS LISTING_LATITUDE,
-            longitude AS LISTING_LONGITUDE,
-            CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC) AS LISTING_PRICE,
+            ) AS ABOUT_WORD_COUNT,
+            host_is_superhost AS IS_SUPERHOST,
+            host_has_profile_pic AS HAS_PROFILE_PHOTO,
+            calculated_host_listings_count AS LISTING_COUNT,
+            latitude AS LATITUDE,
+            longitude AS LONGITUDE,
+            CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC) AS PRICE,
             PERCENTILE_APPROX(
                 CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC),
                 0.50
-            ) OVER() AS LISTING_PRICE_2Q,
+            ) OVER() AS PRICE_2Q,
             PERCENTILE_APPROX(
                 CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC),
                 0.75
-            ) OVER() * 1.5 AS LISTING_PRICE_UPPER,
-            ROUND((30 - CAST(availability_30 AS NUMERIC)) / 30 * 100, 0) AS LISTING_OCCUPANCY_RATE,
-            number_of_reviews AS LISTING_REVIEW_COUNT,
-            neighbourhood_cleansed AS LISTING_MUNICIPALITY
+            ) OVER() * 1.5 AS PRICE_UPPER,
+            ROUND((30 - CAST(availability_30 AS NUMERIC)) / 30 * 100, 0) AS OCCUPANCY_RATE,
+            number_of_reviews AS REVIEW_COUNT,
+            neighbourhood_cleansed AS MUNICIPALITY
         FROM dataset
         WHERE 1=1
             AND host_identity_verified = 't'
@@ -79,62 +79,83 @@ airbnb_processed: >
         SNAPSHOT_DATE,
         LISTING_ID,
         HOST_ID,
-        HOST_YEAR_OF_EXP,
-        HOST_ABOUT_WORD_COUNT,
-        IS_HOST_SUPERHOST,
-        HAS_HOST_PROFILE_PHOTO,
-        HOST_LISTING_COUNT,
-        LISTING_LATITUDE,
-        LISTING_LONGITUDE,
-        LISTING_OCCUPANCY_RATE,
-        LISTING_PRICE,
-        LISTING_REVIEW_COUNT,
-        LISTING_MUNICIPALITY
+        YEAR_OF_EXP,
+        ABOUT_WORD_COUNT,
+        IS_SUPERHOST,
+        HAS_PROFILE_PHOTO,
+        LISTING_COUNT,
+        LATITUDE,
+        LONGITUDE,
+        OCCUPANCY_RATE,
+        PRICE,
+        REVIEW_COUNT,
+        MUNICIPALITY
     FROM BASE
     WHERE 1=1
-        AND LISTING_PRICE >= LISTING_PRICE_2Q
-        AND LISTING_PRICE <= LISTING_PRICE_UPPER
+        AND PRICE >= PRICE_2Q
+        AND PRICE <= PRICE_UPPER
 
 
 airbnb_dim_host: >
     WITH BASE AS (
-        SELECT DISTINCT
+        SELECT
             HOST_ID,
-            IS_HOST_SUPERHOST,
-            HAS_HOST_PROFILE_PHOTO,
-            HOST_ABOUT_WORD_COUNT,
-            HOST_YEAR_OF_EXP,
-            HOST_LISTING_COUNT
+            CASE
+                WHEN IS_SUPERHOST = 't' THEN 'Y'
+                WHEN IS_SUPERHOST = 'f' THEN 'N'
+                ELSE NULL
+            END AS IS_SUPERHOST,
+            CASE
+                WHEN HAS_PROFILE_PHOTO = 't' THEN 'Y'
+                WHEN HAS_PROFILE_PHOTO = 'f' THEN 'N'
+                ELSE NULL
+            END AS HAS_PROFILE_PHOTO,
+            ABOUT_WORD_COUNT,
+            YEAR_OF_EXP,
+            LISTING_COUNT,
+            SNAPSHOT_DATE AS START_DATE,
+            LEAD(SNAPSHOT) OVER (PARTITION BY HOST_ID ORDER BY SNAPSHOT_DATE) AS END_DATE,
+            ROW_NUMBER() OVER (PARTITION BY HOST_ID ORDER BY SNAPSHOT_DATE DESC) AS RN
         FROM dataset
-        WHERE 1=1
     )
-    SELECT
+    SELECT DISTINCT
         HOST_ID,
-        CASE
-            WHEN IS_HOST_SUPERHOST = 't' THEN 'Y'
-            WHEN IS_HOST_SUPERHOST = 'f' THEN 'N'
-            ELSE NULL
-        END AS IS_HOST_SUPERHOST,
-        CASE
-            WHEN HAS_HOST_PROFILE_PHOTO = 't' THEN 'Y'
-            WHEN HAS_HOST_PROFILE_PHOTO = 'f' THEN 'N'
-            ELSE NULL
-        END AS HAS_HOST_PROFILE_PHOTO,
-        HOST_ABOUT_WORD_COUNT,
-        HOST_YEAR_OF_EXP,
-        HOST_LISTING_COUNT
+        IS_SUPERHOST,
+        HAS_PROFILE_PHOTO,
+        ABOUT_WORD_COUNT,
+        YEAR_OF_EXP,
+        LISTING_COUNT,
+        START_DATE,
+        COALSECE(END_DATE, '9999-12-31') AS END_DATE,
+        CASE WHEN RN = 1 THEN 'Y' ELSE 'N' END AS CURRENT_IND
     FROM BASE
 
 
 airbnb_dim_listing: >
+    WITH BASE AS (
+        SELECT 
+            LISTING_ID,
+            MUNICIPALITY,
+            LATITUDE,
+            LONGITUDE,
+            PRICE,
+            REVIEW_COUNT,
+            SNAPSHOT_DATE AS START_DATE,
+            LEAD(SNAPSHOT) OVER (PARTITION BY HOST_ID ORDER BY SNAPSHOT_DATE) AS END_DATE,
+            ROW_NUMBER() OVER (PARTITION BY HOST_ID ORDER BY SNAPSHOT_DATE DESC) AS RN
+        FROM dataset
+    )
     SELECT DISTINCT
         LISTING_ID,
-        LISTING_MUNICIPALITY,
-        LISTING_LATITUDE,
-        LISTING_LONGITUDE,
-        LISTING_PRICE,
-        LISTING_REVIEW_COUNT
-    FROM dataset
+        MUNICIPALITY,
+        LATITUDE,
+        LONGITUDE,
+        PRICE,
+        REVIEW_COUNT,
+        START_DATE,
+        COALSECE(END_DATE, '9999-12-31') AS END_DATE,
+        CASE WHEN RN = 1 THEN 'Y' ELSE 'N' END AS CURRENT_IND
+    FROM BASE
 
 
 airbnb_fact_occupancy: >
@@ -142,8 +163,8 @@ airbnb_fact_occupancy: >
         ROW_NUMBER() OVER() AS ID,
         LISTING_ID,
         HOST_ID,
-        LISTING_OCCUPANCY_RATE,
-        SNAPSHOT_DATE
+        OCCUPANCY_RATE,
+        CAST(DATE_FORMAT(SNAPSHOT_DATE, 'yyyyMM') AS INT) AS SNAPSHOT_YEAR_MONTH
     FROM dataset
 
 
@@ -152,34 +173,40 @@ airbnb_metric_host_occupancy: <
         SELECT
             FACT.HOST_ID,
             CASE
-                WHEN HOST.HOST_LISTING_COUNT > 1 THEN 'Y'
-                WHEN HOST.HOST_LISTING_COUNT = 1 THEN 'N'
+                WHEN HOST.LISTING_COUNT > 1 THEN 'Y'
+                WHEN HOST.LISTING_COUNT = 1 THEN 'N'
                 ELSE NULL
             END AS IS_MULTI_LISTING,
             CASE
-                WHEN HOST.HOST_YEAR_OF_EXP = 0 THEN '0'
-                WHEN HOST.HOST_YEAR_OF_EXP > 0 AND HOST.HOST_YEAR_OF_EXP <= 4 THEN '0-4'
-                WHEN HOST.HOST_YEAR_OF_EXP > 4 AND HOST.HOST_YEAR_OF_EXP <= 7 THEN '4-7'
-                WHEN HOST.HOST_YEAR_OF_EXP > 7 AND HOST.HOST_YEAR_OF_EXP <= 10 THEN '7-10'
-                WHEN HOST.HOST_YEAR_OF_EXP > 10 THEN '>10'
+                WHEN HOST.YEAR_OF_EXP = 0 THEN '0'
+                WHEN HOST.YEAR_OF_EXP > 0 AND HOST.YEAR_OF_EXP <= 4 THEN '0-4'
+                WHEN HOST.YEAR_OF_EXP > 4 AND HOST.YEAR_OF_EXP <= 7 THEN '4-7'
+                WHEN HOST.YEAR_OF_EXP > 7 AND HOST.YEAR_OF_EXP <= 10 THEN '7-10'
+                WHEN HOST.YEAR_OF_EXP > 10 THEN '>10'
                 ELSE NULL
             END AS YEAR_OF_EXP_CATEGORY,
-            HOST.HAS_HOST_PROFILE_PHOTO AS HAS_PROFILE_PHOTO,
-            HOST.IS_HOST_SUPERHOST AS IS_SUPERHOST,
-            SUM(LISTING.LISTING_REVIEW_COUNT) OVER(PARTITION BY FACT.HOST_ID) AS TOTAL_REVIEW_COUNT,
-            HOST.HOST_ABOUT_WORD_COUNT,
-            QUANTILE_CONT(HOST.HOST_ABOUT_WORD_COUNT, 0.50) OVER() AS HOST_ABOUT_WORD_COUNT_2Q,
-            QUANTILE_CONT(HOST.HOST_ABOUT_WORD_COUNT, 0.75) OVER() AS HOST_ABOUT_WORD_COUNT_3Q,
-            QUANTILE_CONT(HOST.HOST_ABOUT_WORD_COUNT, 0.75) OVER() * 1.5 AS HOST_ABOUT_WORD_COUNT_UPPER,
-            FACT.LISTING_OCCUPANCY_RATE AS OCCUPANCY_RATE,
-            FACT.SNAPSHOT_DATE
+            HOST.HAS_PROFILE_PHOTO,
+            HOST.IS_SUPERHOST,
+            SUM(LISTING.REVIEW_COUNT) OVER(PARTITION BY FACT.HOST_ID) AS TOTAL_REVIEW_COUNT,
+            HOST.ABOUT_WORD_COUNT,
+            QUANTILE_CONT(HOST.ABOUT_WORD_COUNT, 0.50) OVER() AS ABOUT_WORD_COUNT_2Q,
+            QUANTILE_CONT(HOST.ABOUT_WORD_COUNT, 0.75) OVER() AS ABOUT_WORD_COUNT_3Q,
+            QUANTILE_CONT(HOST.ABOUT_WORD_COUNT, 0.75) OVER() * 1.5 AS ABOUT_WORD_COUNT_UPPER,
+            FACT.OCCUPANCY_RATE,
+            FACT.SNAPSHOT_YEAR_MONTH
         FROM dataset FACT
-        INNER JOIN airbnb_dim_host HOST 
+        INNER JOIN airbnb_dim_host HOST
             ON FACT.HOST_ID = HOST.HOST_ID
         INNER JOIN airbnb_dim_listing LISTING
             ON FACT.LISTING_ID = LISTING.LISTING_ID
+        WHERE 1=1
+            AND HOST.CURRENT_IND = 'Y'
+            AND LISTING.CURRENT_IND = 'Y'
+            AND FACT.SNAPSHOT_YEAR_MONTH = (
+                SELECT MAX(SNAPSHOT_YEAR_MONTH) FROM FACT    
+            )
     )
-    SELECT
+    SELECT DISTINCT
         HOST_ID,
         IS_MULTI_LISTING,
         YEAR_OF_EXP_CATEGORY,
@@ -193,14 +220,14 @@ airbnb_metric_host_occupancy: <
             WHEN TOTAL_REVIEW_COUNT > 100 THEN '>100'
         END AS TOTAL_REVIEW_CATEGORY,
         CASE
-            WHEN HOST_ABOUT_WORD_COUNT = 0 THEN 'No Description'
-            WHEN HOST_ABOUT_WORD_COUNT > 0
-                AND HOST_ABOUT_WORD_COUNT <= HOST_ABOUT_WORD_COUNT_2Q THEN 'Short'
-            WHEN HOST_ABOUT_WORD_COUNT > HOST_ABOUT_WORD_COUNT_2Q
-                AND HOST_ABOUT_WORD_COUNT <= HOST_ABOUT_WORD_COUNT_3Q THEN 'Concise'
-            WHEN HOST_ABOUT_WORD_COUNT > HOST_ABOUT_WORD_COUNT_3Q
-                AND HOST_ABOUT_WORD_COUNT <= HOST_ABOUT_WORD_COUNT_UPPER THEN 'Detailed'
-            WHEN HOST_ABOUT_WORD_COUNT > HOST_ABOUT_WORD_COUNT_UPPER THEN 'Lengthy'
+            WHEN ABOUT_WORD_COUNT = 0 THEN 'No Description'
+            WHEN ABOUT_WORD_COUNT > 0
+                AND ABOUT_WORD_COUNT <= ABOUT_WORD_COUNT_2Q THEN 'Short'
+            WHEN ABOUT_WORD_COUNT > ABOUT_WORD_COUNT_2Q
+                AND ABOUT_WORD_COUNT <= ABOUT_WORD_COUNT_3Q THEN 'Concise'
+            WHEN ABOUT_WORD_COUNT > ABOUT_WORD_COUNT_3Q
+                AND ABOUT_WORD_COUNT <= ABOUT_WORD_COUNT_UPPER THEN 'Detailed'
+            WHEN ABOUT_WORD_COUNT > ABOUT_WORD_COUNT_UPPER THEN 'Lengthy'
         END AS HOST_ABOUT_CATEGORY,
         OCCUPANCY_RATE,
         SNAPSHOT_DATE
