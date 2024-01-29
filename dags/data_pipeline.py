@@ -8,6 +8,7 @@
 from datetime import datetime
 
 from airflow import DAG
+from airflow.utils.dates import days_ago
 from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
 from airflow.operators.bash import BashOperator
 
@@ -16,7 +17,7 @@ with DAG(
     dag_id="Airbnb_Host_Analytics",
     default_args={
         "owner": "Travis Hong",
-        "start_date": datetime(2024, 1, 30),
+        "start_date": days_ago(1),
         "retries": 0,
         # Switched off emailing as unable
         # "on_success_callback": email_sender.dag_complete_alert,
