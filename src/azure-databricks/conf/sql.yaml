@@ -1,5 +1,4 @@
-data_processing:
-  airbnb_processed: >
+airbnb_processed: >
     WITH BASE AS (
         SELECT
             TO_DATE(last_scraped, 'yyyy-MM-dd') AS SNAPSHOT_DATE,
@@ -96,8 +95,8 @@ data_processing:
         AND LISTING_PRICE >= LISTING_PRICE_2Q
         AND LISTING_PRICE <= LISTING_PRICE_UPPER
 
-data_modelling:
-  airbnb_dim_host: >
+
+    airbnb_dim_host: >
     WITH BASE AS (
         SELECT DISTINCT
             HOST_ID,
@@ -126,7 +125,8 @@ data_modelling:
         HOST_LISTING_COUNT
     FROM BASE
 
-  airbnb_dim_listing: >
+
+airbnb_dim_listing: >
     SELECT DISTINCT
         LISTING_ID,
         LISTING_MUNICIPALITY,
@@ -136,7 +136,8 @@ data_modelling:
         LISTING_REVIEW_COUNT
     FROM dataset
 
-  airbnb_fact_occupancy: >
+
+airbnb_fact_occupancy: >
     SELECT DISTINCT
         ROW_NUMBER() OVER() AS ID,
         LISTING_ID,
@@ -145,8 +146,8 @@ data_modelling:
         SNAPSHOT_DATE
     FROM dataset
 
-metric_layer:
-  airbnb_metric_host_occupancy: <
+
+airbnb_metric_host_occupancy: <
     WITH BASE AS (
         SELECT
             FACT.HOST_ID,
