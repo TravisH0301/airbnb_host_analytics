@@ -65,6 +65,7 @@ def process_data(df, query):
 
 def main():
     print("Process has started.")
+
     # Configure storage account credentials
     print("Configuring storage account credentials...")
     storage_account_name = dbutils.secrets.get(
@@ -119,6 +120,7 @@ def main():
     target_location = f"abfss://airbnb-host-analytics@{storage_account_name}" \
         ".dfs.core.windows.net/silver/airbnb_processed"
     df_airbnb_processed.write.format("delta").mode("overwrite").save(target_location)
+    
     print("Process has completed.")
 
 if __name__ == "__main__":
