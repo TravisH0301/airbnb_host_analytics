@@ -39,6 +39,39 @@ def main():
         df.createOrReplaceTempView(df_name)
 
     # Create metric layer table
+    """Metric layer table contains records about host's characteristics
+    and their listing's occupancy rate in the next 30 days.
+    This table is built on top of the dimensional data model to allows
+    one to easily analyse the effect of host characteristics on thier 
+    listing performance. 
+
+    For the analytics purpose, the table is built with the up-to-date
+    data from the dimensional model with the following attributes:
+    - HOST_ID: Host unique identification
+    - IS_MULTI_LISTING: Indicator of multiple listings
+    - YEAR_OF_EXP_CATEGORY: Years of experience categorised in
+        - 0
+        - 1-4
+        - 4-7
+        - 7-10
+        - >10
+    - HAS_PROFILE_PHOTO: Indicator of profile photo
+    - IS_SUPERHOST: Indicator of super host
+    - TOTAL_REVIEW_CATEGORY: Host's total listing review count categorised in
+        - 0
+        - 1-10
+        - 10-50
+        - 50-100
+        - >100
+    - HOST_ABOUT_CATEGORY: Host about description word count categorised in
+        - Short (x<=2Q)
+        - Concise (2Q<x<=3Q)
+        - Detailed (3Q<x<=Upper Limit)
+        - Lengthy (>Upper Limit)
+      Note that the median (2Q) word count is 8 words
+    - AVERAGE_OCCUPANCY_RATE: Average occupancy rate of host's listings
+    - SNAPSHOT_YEAR_MONTH: Record snapshot year month in YYYYMM
+    """
     query_name = "metric_layer"
     query = utils.get_query(query_name)
     df_airbnb_metric = spark.sql(query)
