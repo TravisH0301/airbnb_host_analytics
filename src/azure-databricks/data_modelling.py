@@ -10,7 +10,7 @@ import os
 os.system("pip install pyyaml")
 import yaml
 
-from utils.utils import set_azure_storage_config
+from utils import utils
 
 
 def main():
@@ -18,8 +18,22 @@ def main():
 
     # Configure storage account credentials
     print("Configuring storage account credentials...")
-    set_azure_storage_config(spark, dbutils)
+    utils.set_azure_storage_config(spark, dbutils)
 
+    # Load processed dataset
+    container_name, file_path, file_type = (
+        "airbnb-host-analytics",
+        "silver/airbnb_processed"
+        "delta"
+    )
+    df_airbnb_processed = utils.load_data_to_df(
+        spark,
+        dbutils,
+        container_name,
+        file_path,
+        file_type
+    )
+    
 
     print("Process has completed.")
 
