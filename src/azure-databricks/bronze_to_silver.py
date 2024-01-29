@@ -1,7 +1,8 @@
 ###############################################################################
 # Name: bronze_to_silver.py
-# Description: This script processes the raw Airbnb dataset and stores it as a
-#              delta lake table in the silver layer of the ADLS gen2.
+# Description: This script creates a dimensional data model from raw Airbnb
+#              dataset and stores it as Delta Lake tables in the silver layer
+#              of the ADLS gen2.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
@@ -26,7 +27,7 @@ def process_data(df):
     WITH BASE AS (
         SELECT
             TO_DATE(last_scraped, 'yyyy-MM-dd') AS SNAPSHOT_DATE,
-            CAST(RIGHT(listing_url, POSITION('/' IN REVERSE(listing_url)) - 1) AS INT) AS LISTING_ID,
+            CAST(RIGHT(listing_url, POSITION('/' IN REVERSE(listing_url)) - 1) AS LONG) AS LISTING_ID,
             host_id AS HOST_ID,
             ROUND(
                 DATEDIFF(
@@ -141,7 +142,7 @@ def main():
     print("Loading raw Airbnb dataset...")
     df_raw = spark.read.format("parquet").load(source_location)
 
-    # Process data
+    # Process raw dataset
     """
     The raw dataset is processed and filtered with the following conditions:
     - Host identity must be verified for valid hosts.
@@ -162,8 +163,16 @@ def main():
     print("Processing raw dataset...")
     df_airbnb_processed = process_data(df_raw)
 
-    # Store it as delta lake table in the silver layer
-    print("Saving Delta Lake table in silver layer...")
+    # Create dimensional model
+    ## Host dimension table
+
+    ## Listing dimension table
+
+    ## Listing occupancy fact table
+    """"""
+
+    # Store data model as delta lake tables in silver layer
+    print("Saving Delta Lake tables in silver layer...")
     df_airbnb_processed.write.format("delta").mode("overwrite").save(target_location)
     print("Process has completed.")
 
