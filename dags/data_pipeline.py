@@ -33,7 +33,16 @@ with DAG(
         job_id = 128784675279690
     )
     
+    # Task to create dimensional model and load tables to silver layer
+    data_modelling = DatabricksRunNowOperator(
+        task_id = 'data_modelling',
+        databricks_conn_id = 'databricks_default',
+        job_id = 851806766336090
+    )
+    
+
     # Define task dependecies
     (
         data_processing
+        >> data_modelling
     )
