@@ -24,7 +24,7 @@ def main():
     print("Loading processed dataset...")
     container_name, file_path, file_type = (
         "airbnb-host-analytics",
-        "silver/airbnb_processed"
+        "silver/airbnb_processed",
         "delta"
     )
     df_airbnb_processed = utils.load_data_to_df(
