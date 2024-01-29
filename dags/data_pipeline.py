@@ -26,21 +26,27 @@ with DAG(
     schedule_interval=None
 ) as dag:
     
-    # Task to process raw datasets and load compiled dataset to bronze layer
+    # Task to process raw datasets and load compiled dataset to silver layer
     data_processing = DatabricksRunNowOperator(
         task_id = 'data_processing',
         databricks_conn_id = 'databricks_default',
         job_id = 128784675279690
     )
     
-    # Task to create dimensional model and load tables to silver layer
+    # Task to create dimensional model and load tables to gold layer
     data_modelling = DatabricksRunNowOperator(
         task_id = 'data_modelling',
         databricks_conn_id = 'databricks_default',
         job_id = 851806766336090
     )
     
-
+    # Task to create metric layer and load table to gold layer
+    metric_layer = DatabricksRunNowOperator(
+        task_id = 'metric_layer',
+        databricks_conn_id = 'databricks_default',
+        job_id = 711715871126399
+    )
+    
     # Define task dependecies
     (
         data_processing
