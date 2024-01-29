@@ -1,5 +1,5 @@
 ###############################################################################
-# Name: bronze_to_silver.py
+# Name: data_processing.py
 # Description: This script processes the raw Airbnb datasets and load the 
 #              compiled dataset into the silver layer of ADLS gen2
 #              as a delta lake table.
