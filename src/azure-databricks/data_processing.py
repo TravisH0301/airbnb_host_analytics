@@ -14,6 +14,8 @@ from functools import reduce
 import pandas as pd
 from pyspark.sql import DataFrame
 
+from utils.utils import set_azure_storage_config
+
 
 def load_compile_data(snapshot_dates: list, source_location: str):
     """This function loads the raw Airbnb datasets from 
@@ -66,14 +68,7 @@ def main():
 
     # Configure storage account credentials
     print("Configuring storage account credentials...")
-    storage_account_name = dbutils.secrets.get(
-        scope="key-vault-secret",
-        key="storage-account-name"
-    )
-    spark.conf.set(
-        f"fs.azure.account.key.{storage_account_name}.dfs.core.windows.net",
-        dbutils.secrets.get(scope="key-vault-secret",key="storage-account-key")
-    )
+    set_azure_storage_config(spark, dbutils)
 
     # Load raw Airbnb datasets
     print("Loading raw Airbnb datasets...")
