@@ -17,12 +17,12 @@ with DAG(
     default_args={
         "owner": "Travis Hong",
         "start_date": datetime(2024, 1, 30),
-        "schedule_interval": "once",
         "retries": 0,
         # Switched off emailing as unable
         # "on_success_callback": email_sender.dag_complete_alert,
         # "on_failure_callback": email_sender.dag_failure_alert
-    }
+    },
+    schedule_interval=None
 ) as dag:
     
     # Task to process raw datasets and load compiled dataset to bronze layer
