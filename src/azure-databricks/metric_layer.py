@@ -63,7 +63,7 @@ def main():
         - 10-50
         - 50-100
         - >100
-    - HOST_ABOUT_CATEGORY: Host about description word count categorised in
+    - HOST_ABOUT_LENGTH_CATEGORY: Host about description word count categorised in
         - Short (x<=2Q)
         - Concise (2Q<x<=3Q)
         - Detailed (3Q<x<=Upper Limit)
