@@ -15,7 +15,7 @@ with DAG(
     dag_id="Airbnb_Host_Analytics",
     default_args={
         "owner": "Travis Hong",
-        "start_date": datetime(2024, 01, 30),
+        "start_date": datetime(2024, 1, 30),
         "schedule_interval": "once",
         "retries": 0,
         # Switched off emailing as unable
