@@ -1,6 +1,6 @@
 ###############################################################################
 # Name: function_app.py
-# Description: This script loads Airbnb raw dataset into the bronze layer of
+# Description: This script loads Airbnb raw datasets into the bronze layer of
 #              the ADLS gen2 when triggered via HTTP.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
