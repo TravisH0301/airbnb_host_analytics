@@ -111,9 +111,8 @@ def main():
     """
     print("Processing raw dataset...")
     ## Load data processing query
-    with open("./conf/sql.yaml") as f:
-        conf = yaml.safe_load(f)
-        query = conf["data_processing"]["airbnb_processed"]
+    query_name = "airbnb_processed"
+    query = utils.get_query(query_name)
     ## Apply processing query
     df_airbnb_processed = utils.process_data(spark, df_raw_compiled, query)
 

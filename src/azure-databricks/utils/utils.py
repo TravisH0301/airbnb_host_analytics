@@ -4,6 +4,35 @@
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
+import os
+os.system("pip install pyyaml")
+import yaml
+
+
+def get_query(query_name):
+    """This function retrieves a query from a
+    YAML configuration file.
+    
+    Parameters
+    ----------
+    query_name: str
+        Name of query in the conf file
+
+    Returns
+    -------
+    query: str
+        Retrieved query
+    """
+    # Change directory to conf
+    new_path = os.path.normpath(os.path.join(os.getcwd(), "..", "conf"))
+    os.chdir(new_path)
+
+    # Retrieve query from conf file
+    with open("sql.yaml") as f:
+        conf = yaml.safe_load(f)
+        query = conf[query_name]
+
+    return query
 
 
 def set_azure_storage_config(spark, dbutils):
