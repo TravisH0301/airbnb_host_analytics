@@ -2,7 +2,7 @@
 # Name: data_modelling.py
 # Description: This script conducts dimensional modelling to build dimension and
 #              fact tables. The tables are loaded into the gold layer of
-#              ADLS gen2 as a delta lake tables.
+#              ADLS gen2 as delta lake tables.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
