@@ -9,6 +9,7 @@
 import os
 os.system("pip install pyyaml")
 import yaml
+import pandas
 
 
 # Define function to load datasets
