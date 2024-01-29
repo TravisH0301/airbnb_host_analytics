@@ -230,5 +230,5 @@ airbnb_metric_host_occupancy: <
             WHEN ABOUT_WORD_COUNT > ABOUT_WORD_COUNT_UPPER THEN 'Lengthy'
         END AS HOST_ABOUT_CATEGORY,
         OCCUPANCY_RATE,
-        SNAPSHOT_DATE
+        SNAPSHOT_YEAR_MONTH
     FROM BASE    
