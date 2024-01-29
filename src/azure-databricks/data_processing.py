@@ -103,7 +103,14 @@ def main():
         "bronze/raw_dataset_{}",
         "parquet"
     )
-    df_raw_compiled = load_compile_data(snapshot_dates)
+    df_raw_compiled = load_compile_data(
+        spark,
+        dbutils,
+        container_name,
+        file_path,
+        file_type,
+        snapshot_dates
+    )
 
     # Process raw dataset
     """
