@@ -49,6 +49,9 @@ def main():
     
     And this dimension follows SCD type 2.
     """
+    query_name = "airbnb_dim_host"
+    query = utils.get_query(query_name)
+    df_airbnb_dim_host = utils.process_data(spark, df_airbnb_processed, query)
 
     # Model Listing dimension table
     """Listing dimension table contains listing property details
@@ -62,7 +65,7 @@ def main():
     - start_date: SCD type 2 start date
     - end_date: SCD type 2 end date
     - current_ind: Indicator of current record
-    
+
     And this dimension follows SCD type 2.
     """
 
@@ -82,6 +85,7 @@ def main():
     
 
     print("Process has completed.")
+
 
 if __name__ == "__main__":
     main()
