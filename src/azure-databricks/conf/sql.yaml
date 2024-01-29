@@ -96,7 +96,7 @@ airbnb_processed: >
         AND LISTING_PRICE <= LISTING_PRICE_UPPER
 
 
-    airbnb_dim_host: >
+airbnb_dim_host: >
     WITH BASE AS (
         SELECT DISTINCT
             HOST_ID,
