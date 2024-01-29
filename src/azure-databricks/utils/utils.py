@@ -22,6 +22,11 @@ def set_azure_storage_config(spark, dbutils):
         Spark session
     dbutils: object
         dbutil object
+
+    Returns
+    -------
+    storage_account_name: str
+        Azure storage account name
     """
     storage_account_name = dbutils.secrets.get(
         scope="key-vault-secret",
@@ -31,3 +36,34 @@ def set_azure_storage_config(spark, dbutils):
         f"fs.azure.account.key.{storage_account_name}.dfs.core.windows.net",
         dbutils.secrets.get(scope="key-vault-secret",key="storage-account-key")
     )
+
+    return storage_account_name
+
+def load_data_to_df(spark, dbutils, container_name, file_path, file_type):
+    """This function reads a dataset from the given
+    ADLS source file location and returns as a 
+    Spark dataframe.
+    
+    Parameters
+    ----------
+    spark: object
+        Spark session
+    dbutils: object
+        Databricks util object
+    container_name: str
+        ADLS container name
+    file_path: str
+        Source file path in ADLS
+    file_type: str
+        Dataset storage format - e.g., parquet or delta
+        
+    Returns
+    -------
+    Spark dataframe
+    """
+    storage_account_name = set_azure_storage_config(spark, dbutils)
+    source_location = f"abfss://{container_name}@{storage_account_name}" \
+        f".dfs.core.windows.net/{file_path}"
+    
+    return spark.read.format(file_type).load(source_location)
+
