@@ -23,8 +23,7 @@ def load_compile_data(
         container_name,
         file_path,
         file_type,
-        snapshot_dates,
-        source_location
+        snapshot_dates
     ):
     """This function loads the raw Airbnb datasets from 
     the bronze layer of the ADLS. The datasets are then
@@ -44,8 +43,6 @@ def load_compile_data(
         Dataset storage format - e.g., parquet or delta
     snapshot_date: list
         list of snapshot dates in string
-    source_location: str
-        Source file location of ADLS
         
     Returns
     -------
@@ -60,8 +57,6 @@ def load_compile_data(
             file_path.format(snapshot_date),
             file_type
         )
-        df_raw = spark.read.format("parquet") \
-            .load(source_location.format(snapshot_date))
         df_raw_list.append(df_raw)
 
     return reduce(DataFrame.unionAll, df_raw_list)
@@ -108,7 +103,7 @@ def main():
         "bronze/raw_dataset_{}",
         "parquet"
     )
-    df_raw_compiled = load_compile_data(snapshot_dates, source_location)
+    df_raw_compiled = load_compile_data(snapshot_dates)
 
     # Process raw dataset
     """
