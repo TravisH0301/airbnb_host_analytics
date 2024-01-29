@@ -35,7 +35,7 @@ data_processing:
             ROUND((30 - CAST(availability_30 AS NUMERIC)) / 30 * 100, 0) AS LISTING_OCCUPANCY_RATE,
             number_of_reviews AS LISTING_REVIEW_COUNT,
             neighbourhood_cleansed AS LISTING_MUNICIPALITY
-        FROM airbnb_raw
+        FROM dataset
         WHERE 1=1
             AND host_identity_verified = 't'
             AND availability_60 <> 0
@@ -106,7 +106,7 @@ data_modelling:
             HOST_ABOUT_WORD_COUNT,
             HOST_YEAR_OF_EXP,
             HOST_LISTING_COUNT
-        FROM airbnb_processed
+        FROM dataset
         WHERE 1=1
     )
     SELECT
@@ -134,7 +134,7 @@ data_modelling:
         LISTING_LONGITUDE,
         LISTING_PRICE,
         LISTING_REVIEW_COUNT
-    FROM airbnb_processed
+    FROM dataset
 
   airbnb_fact_occupancy: >
     SELECT DISTINCT
@@ -143,7 +143,7 @@ data_modelling:
         HOST_ID,
         LISTING_OCCUPANCY_RATE,
         SNAPSHOT_DATE
-    FROM airbnb_processed
+    FROM dataset
 
 metric_layer:
   airbnb_metric_host_occupancy: <
@@ -172,7 +172,7 @@ metric_layer:
             QUANTILE_CONT(HOST.HOST_ABOUT_WORD_COUNT, 0.75) OVER() * 1.5 AS HOST_ABOUT_WORD_COUNT_UPPER,
             FACT.LISTING_OCCUPANCY_RATE AS OCCUPANCY_RATE,
             FACT.SNAPSHOT_DATE
-        FROM airbnb_fact_occupancy FACT
+        FROM dataset FACT
         INNER JOIN airbnb_dim_host HOST 
             ON FACT.HOST_ID = HOST.HOST_ID
         INNER JOIN airbnb_dim_listing LISTING
