@@ -9,7 +9,10 @@
 import os
 os.system("pip install pyyaml")
 import yaml
+from functools import reduce
+
 import pandas as pd
+from pyspark.sql import DataFrame
 
 
 # Define function to load datasets
@@ -35,7 +38,7 @@ def load_compile_data(snapshot_dates: list, source_location: str):
             .load(source_location.format(snapshot_date))
         df_raw_list.append(df_raw)
 
-    return pd.concat(df_raw_list)
+    return reduce(DataFrame.unionAll, df_raw_list)
 
 
 # Define function to process dataset
@@ -105,7 +108,7 @@ def main():
     """
     print("Processing raw dataset...")
     ## Load data processing query
-    with open("./src/azure-databricks/sql.yaml") as f:
+    with open("./conf/sql.yaml") as f:
         conf = yaml.safe_load(f)
         query = conf["data_processing"]["airbnb_processed"]
     ## Apply processing query
