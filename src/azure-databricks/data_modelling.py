@@ -21,6 +21,7 @@ def main():
     utils.set_azure_storage_config(spark, dbutils)
 
     # Load processed dataset
+    print("Loading processed dataset...")
     container_name, file_path, file_type = (
         "airbnb-host-analytics",
         "silver/airbnb_processed"
@@ -37,18 +38,19 @@ def main():
     # Model Host dimension table
     """Host dimension table contains host details with
     the following attributes:
-    - host_id: Host unique identification
-    - is_super_host: Indicator of super host
-    - has_profile_photo: Indicator of profile photo
-    - about_word_count: Host about description word count
-    - year_of_exp: Years of experience in hosting
-    - listing_count: Number of property listed
-    - start_date: SCD type 2 start date
-    - end_date: SCD type 2 end date
-    - current_ind: Indicator of current record
+    - HOST_ID: Host unique identification
+    - IS_SUPERHOST: Indicator of super host
+    - HAS_PROFILE_PHOTO: Indicator of profile photo
+    - ABOUT_WORD_COUNT: Host about description word count
+    - YEAR_OF_EXP: Years of experience in hosting
+    - LISTING_COUNT: Number of property listed
+    - START_DATE: SCD type 2 start date
+    - END_DATE: SCD type 2 end date
+    - CURRENT_IND: Indicator of current record
     
     And this dimension follows SCD type 2.
     """
+    print("Creating Host dimension table...")
     query_name = "airbnb_dim_host"
     query = utils.get_query(query_name)
     df_airbnb_dim_host = utils.process_data(spark, df_airbnb_processed, query)
@@ -56,33 +58,59 @@ def main():
     # Model Listing dimension table
     """Listing dimension table contains listing property details
     with the following attributes:
-    - listing_id: Listing property unique identification
-    - municipality: Suburb
-    - latitude: Latitude
-    - longitude: Latitude
-    - price: Listing price
-    - review_count: Number of reviews
-    - start_date: SCD type 2 start date
-    - end_date: SCD type 2 end date
-    - current_ind: Indicator of current record
+    - LISTING_ID: Listing property unique identification
+    - MUNICIPALITY: Suburb
+    - LATITUDE: Latitude
+    - LONGITUDE: Latitude
+    - PRICE: Listing price
+    - REVIEW_COUNT: Number of reviews
+    - START_DATE: SCD type 2 start date
+    - END_DATE: SCD type 2 end date
+    - CURRENT_IND: Indicator of current record
 
     And this dimension follows SCD type 2.
     """
+    print("Creating Listing dimension table...")
+    query_name = "airbnb_dim_listing"
+    query = utils.get_query(query_name)
+    df_airbnb_dim_listing = utils.process_data(spark, df_airbnb_processed, query)
 
     # Model Occupancy fact table
     """Occupancy fact table contains occupancy rate within the 
     next 30 days of the listing properties with the following
     attributes:
-    - id: Unique identifiation
-    - listing_id: Listing identification
-    - host_id: Host identification
-    - occupancy_rate: Occupancy rate within next 30 days
-    - snapshot_date: Monthly snapshot date
+    - ID: Unique identifiation
+    - LISTING_ID: Listing identification
+    - HOST_ID: Host identification
+    - OCCUPANCY_RATE: Occupancy rate within next 30 days
+    - SNAPSHOT_YEAR_MONTH: Snapshot year month in YYYYMM
 
     This table is a monthly snapshot fact table containing 
     occupancy rate records at monthly intervals.
     """
-    
+    print("Creating Occupancy fact table...")
+    query_name = "airbnb_fact_occupancy"
+    query = utils.get_query(query_name)
+    df_airbnb_fact_occupancy = utils.process_data(spark, df_airbnb_processed, query)
+
+    # Save data model as Delta Lake tables in ADLS
+    df_path_dict = {
+        "gold/airbnb_dim_host": df_airbnb_dim_host,
+        "gold/airbnb_dim_listing": df_airbnb_dim_listing,
+        "gold/airbnb_fact_occupancy": df_airbnb_fact_occupancy
+    }
+    save_mode = "overwrite"
+    for file_path, df in df_path_dict.items():
+        print(f"Saving table {file_path[4:]}...")
+        utils.load_df_to_adls(
+            spark,
+            dbutils,
+            df,
+            container_name,
+            file_path,
+            file_type,
+            save_mode
+        )
 
     print("Process has completed.")
 
