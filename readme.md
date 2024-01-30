@@ -28,7 +28,7 @@ This project aims to study the effect of Airbnb host characteristics on the perf
 ### IaC
 
 ## Insights
-<img src="./images/dashboard.jpg" width="800">
+<img src="./images/dashboard.JPG" width="800">
 The dashboard showcases the influence of host characteristics on Airbnb listing occupancy rates. Key insights include:
 
 - Super Host Status: Super Hosts tend to have higher occupancy rates, indicating that Airbnb's recognition of excellent service positively impacts bookings.
