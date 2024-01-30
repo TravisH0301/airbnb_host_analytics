@@ -35,7 +35,7 @@ def send_failure_status_email(context):
 
 
 with DAG(
-    dag_id="Airbnb_Host_Analytics",
+    dag_id="test email",
     default_args={
         "owner": "Travis Hong",
         "start_date": days_ago(1),
