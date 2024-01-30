@@ -10,9 +10,48 @@ from datetime import datetime
 from airflow import DAG
 from airflow.models import Variable
 from airflow.utils.dates import days_ago
+from airflow.utils.email import send_email
 from airflow.operators.bash import BashOperator
 from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
   
+
+def send_success_status_email(context):
+    """This function sends out an email alert upon
+    successful task execution.
+    
+    This function relies on the SMTP configurations in Airflow.
+    https://airflow.apache.org/docs/apache-airflow/stable/howto/email-config.html#using-default-smtp
+    """
+    task_instance = context['task_instance']
+    task_status = task_instance.current_state()
+
+    to_email = Variable.get("email_receiver")
+    subject = f"[JOB COMPLETE] Airflow - {task_instance.task_id}"
+    body = f"The task {task_instance.task_id} has completed successfully.\n" \
+           f"Task execution date: {context['execution_date']}\n" \
+           f"Log URL: {task_instance.log_url}\n"
+
+    send_email(to=to_email, subject=subject, html_content=body)
+
+
+def send_failure_status_email(context):
+    """This function sends out an email alert upon
+     task execution failure.
+    
+    This function relies on the SMTP configurations in Airflow.
+    https://airflow.apache.org/docs/apache-airflow/stable/howto/email-config.html#using-default-smtp
+    """
+    task_instance = context['task_instance']
+    task_status = task_instance.current_state()
+
+    to_email = Variable.get("email_receiver")
+    subject = f"[JOB FAILED] Airflow - {task_instance.task_id}"
+    body = f"The task {task_instance.task_id} has failed.\n" \
+           f"Task execution date: {context['execution_date']}\n" \
+           f"Log URL: {task_instance.log_url}\n\n"
+
+    send_email(to=to_email, subject=subject, html_content=body)
+
 
 with DAG(
     dag_id="Airbnb_Host_Analytics",
