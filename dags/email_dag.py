@@ -49,7 +49,7 @@ with DAG(
     # Task
     test = BashOperator(
         task_id="test",
-        bash_command="echo hello world",
+        bash_command="echo $AIRFLOW__SMTP__SMTP_PASSWORD",
         dag=dag
     )
 
