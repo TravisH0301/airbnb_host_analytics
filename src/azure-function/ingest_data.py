@@ -57,7 +57,7 @@ def load_storage_cred(yaml_path):
     account_key: str
         Storage account key
     """
-    with open("./cred.yaml") as f:
+    with open(yaml_path) as f:
         conf = yaml.safe_load(f)
         account_name = conf["account_name"]
         account_key = conf["account_key"]
