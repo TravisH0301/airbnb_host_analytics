@@ -7,6 +7,7 @@
 import os
 os.system("pip install pyyaml")
 import yaml
+import logging
 
 
 def get_query(query_name):
@@ -152,3 +153,50 @@ def process_data(spark, df, query):
     """
     df.createOrReplaceTempView("dataset")
     return spark.sql(query)
+
+
+def set_logger(
+    name=None,
+    level=logging.INFO,
+    streamhandler=True,
+    filehandler=False,
+    filename="",
+):
+    """This function returns a configured logger object.
+
+    Parameters
+    ----------
+    name : str or None, optional
+        Name of the logger
+    level : int, optional
+        Logging level (e.g., logging.INFO, logging.DEBUG)
+    streamhandler : bool, optional
+        Indication of stream handler addition
+    filehandler : bool, optional
+        Indication of filehandler addition
+    filename : str, optional
+        Log file path for filehandler
+
+    Returns
+    -------
+    logging.Logger
+        A configured logging.Logger object.
+    """
+    logger = logging.getLogger(name)
+    logger.setLevel(level)
+
+    if streamhandler:
+        formatter = logging.Formatter(
+            "%(asctime)s, %(levelname)-8s [%(filename)s:%(lineno)d] %(message)s"
+        )
+        sh = logging.StreamHandler()
+        sh.setLevel(level)
+        sh.setFormatter(formatter)
+        logger.addHandler(sh)
+
+    if filehandler and isinstance(filename, (str, Path)):
+        fh = logging.FileHandler(filename=filename, mode="a")
+        fh.setLevel(level)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+    return logger
