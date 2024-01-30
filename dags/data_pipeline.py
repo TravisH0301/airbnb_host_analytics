@@ -15,7 +15,7 @@ from airflow.operators.bash import BashOperator
 from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
   
 
-def send_success_status_email(context):
+def send_success_alert_email(context):
     """This function sends out an email alert upon
     successful task execution.
     
@@ -34,7 +34,7 @@ def send_success_status_email(context):
     send_email(to=to_email, subject=subject, html_content=body)
 
 
-def send_failure_status_email(context):
+def send_failure_alert_email(context):
     """This function sends out an email alert upon
      task execution failure.
     
@@ -59,9 +59,8 @@ with DAG(
         "owner": "Travis Hong",
         "start_date": days_ago(1),
         "retries": 0,
-        # Switched off emailing as unable
-        # "on_success_callback": email_sender.dag_complete_alert,
-        # "on_failure_callback": email_sender.dag_failure_alert
+        "on_success_callback": send_success_alert_email,
+        "on_failure_callback": send_failure_alert_email
     },
     schedule_interval=None
 ) as dag:
