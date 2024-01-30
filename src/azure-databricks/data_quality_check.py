@@ -5,6 +5,8 @@
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
+import os
+os.system("pip install great_expectations")
 import great_expectations as gx
 from great_expectations.checkpoint import Checkpoint
 
