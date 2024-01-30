@@ -11,7 +11,7 @@ sys.path.append("src/azure-function")
 
 from unittest import TestCase, main
 
-from ingest_data import fetch_data, load_storage_cred, create_dir_client, create_dir_client
+from ingest_data import fetch_data, load_storage_cred
 
 
 class test_functions(TestCase):
