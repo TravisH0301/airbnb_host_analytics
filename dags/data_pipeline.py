@@ -101,10 +101,18 @@ with DAG(
         job_id = 711715871126399
     )
     
+    # Task to validate data quality of gold layer
+    data_quality_check = DatabricksRunNowOperator(
+        task_id = 'data_quality_check',
+        databricks_conn_id = 'databricks_default',
+        job_id = 283696756443919
+    )
+
     # Define task dependecies
     (
         data_ingestion
         >> data_processing
         >> data_modelling
         >> metric_layer
+        >> data_quality_check
     )
