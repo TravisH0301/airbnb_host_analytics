@@ -1,7 +1,8 @@
 *.drawio
 
-test*
 cred*
+
+test.py
 
 .vscode/
 .databricks
