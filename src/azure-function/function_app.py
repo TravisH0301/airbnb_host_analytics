@@ -11,7 +11,7 @@ import logging
 from ingest_data import main
 
     
-app = func.FunctionApp(http_auth_level=func.AuthLevel.ANONYMOUS)
+app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 @app.route(route="load_raw_data")
 def load_raw_data(req: func.HttpRequest) -> func.HttpResponse:
