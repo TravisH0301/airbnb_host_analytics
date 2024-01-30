@@ -8,10 +8,11 @@
 from datetime import datetime
 
 from airflow import DAG
+from airflow.models import Variable
 from airflow.utils.dates import days_ago
 from airflow.operators.bash import BashOperator
 from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
-
+  
 
 with DAG(
     dag_id="Airbnb_Host_Analytics",
@@ -27,9 +28,17 @@ with DAG(
 ) as dag:
     
     # Task to ingest raw datasets into bronze layer
+    var_key = "function-key"
+    function_key = Variable.get(var_key)
+    function_app_name = "azure-airbnb-load-data" 
+    function_name = "data_ingestion"
     data_ingestion = BashOperator(
         task_id="data_ingestion",
-        bash_command="python /opt/airflow/dags/scripts/land_file.py",
+        bash_command="curl https://{}.azurewebsites.net/api/{}?code={}".format(
+            function_app_name,
+            function_name,
+            function_key
+        ),
         dag=dag
     )
 
