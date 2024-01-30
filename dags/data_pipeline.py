@@ -9,8 +9,8 @@ from datetime import datetime
 
 from airflow import DAG
 from airflow.utils.dates import days_ago
-from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
 from airflow.operators.bash import BashOperator
+from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
 
 
 with DAG(
@@ -26,6 +26,13 @@ with DAG(
     schedule_interval=None
 ) as dag:
     
+    # Task to ingest raw datasets into bronze layer
+    data_ingestion = BashOperator(
+        task_id="data_ingestion",
+        bash_command="python /opt/airflow/dags/scripts/land_file.py",
+        dag=dag
+    )
+
     # Task to process raw datasets and load compiled dataset to silver layer
     data_processing = DatabricksRunNowOperator(
         task_id = 'data_processing',

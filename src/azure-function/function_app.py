@@ -13,7 +13,7 @@ from ingest_data import main
     
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
-@app.route(route="load_raw_data")
+@app.route(route="data_ingestion")
 def load_raw_data(req: func.HttpRequest) -> func.HttpResponse:
     logging.info('Python HTTP trigger function processed a request.')
 
