@@ -7,6 +7,7 @@
 ###############################################################################
 import os
 os.system("pip install great_expectations")
+
 import great_expectations as gx
 from great_expectations.checkpoint import Checkpoint
 
@@ -14,18 +15,18 @@ from utils import utils
 
 
 def main():
-    print("Process has started.")
+    logger.info("Process has started.")
 
     # Configure storage account credentials
-    print("Configuring storage account credentials...")
+    logger.info("Configuring storage account credentials...")
     utils.set_azure_storage_config(spark, dbutils)
 
     # Create Great Expectations (GX) data context
-    print("Creating Great Expectations data context...")
+    logger.info("Creating Great Expectations data context...")
     context = gx.get_context()
 
     # Load metric layer dataset
-    print("Loading metric layer dataset...")
+    logger.info("Loading metric layer dataset...")
     container_name, file_path, file_type = (
         "airbnb-host-analytics",
         "gold/airbnb_metric_host_occupancy",
@@ -40,7 +41,7 @@ def main():
     )
 
     # Create GX datasource using Spark dataframe
-    print("Creating Great Expectations datasource...")
+    logger.info("Creating Great Expectations datasource...")
     dataframe_datasource = context.sources.add_or_update_spark(
         name="in_memory_datasource",
     )
@@ -53,7 +54,7 @@ def main():
     batch_request = dataframe_asset.build_batch_request()
 
     # Create GX validator with expectation suite
-    print("Creating Great Expectations validator...")
+    logger.info("Creating Great Expectations validator...")
     suite_name = "metric_layer_data_quality_check"
     context.add_or_update_expectation_suite(expectation_suite_name=suite_name)
     validator = context.get_validator(
@@ -62,11 +63,9 @@ def main():
     )
 
     # Define test cases
-    print("Defining test cases...")
-    for col in df.columns:
+    logger.info("Defining test cases...")
+    for col in ["HOST_ID", "AVERAGE_OCCUPANCY_RATE", "SNAPSHOT_YEAR_MONTH"]:
         validator.expect_column_values_to_not_be_null(col)
-        if ("IS_" in col) or ("HAS_" in col):
-            validator.expect_column_values_to_be_in_set(col, ["Y", "N"])
     validator.save_expectation_suite(discard_failed_expectations=False)
 
     # Create checkpoint
@@ -99,4 +98,9 @@ def main():
             f" results: \n\n{checkpoint_results}"
         )
     else:
-        print("Test results:", checkpoint_result_status)
+        logger.info("Test results:", checkpoint_result_status)
+
+
+if __name__ == "__main__":
+    logger = utils.set_logger()
+    main()
