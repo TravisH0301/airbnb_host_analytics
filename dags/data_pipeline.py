@@ -65,7 +65,8 @@ with DAG(
     
     # Define task dependecies
     (
-        data_processing
+        data_ingestion
+        >> data_processing
         >> data_modelling
         >> metric_layer
     )
