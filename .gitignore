@@ -1,8 +1,7 @@
 *.drawio
 
 test*
-
-cred.yaml
+cred*
 
 .vscode/
 .databricks
