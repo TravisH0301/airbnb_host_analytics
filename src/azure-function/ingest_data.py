@@ -98,10 +98,10 @@ def upload_file(file, file_name, directory_client):
 
 
 def main():
-    print("Process has started.")
+    logger.info("Process has started.")
 
     # Fetch Airbnb listing datasets via API from 2023 March to 2023 June
-    print("Fetching Airbnb listing datasets...")
+    logger.info("Fetching Airbnb listing datasets...")
     df_list = []
     snapshot_dates = [
         "2023-03-13",
@@ -110,21 +110,21 @@ def main():
         "2023-06-06"
     ]
     for snapshot_date in snapshot_dates:
-        print(f"Fetching snapshot date {snapshot_date}...")
+        logger.info(f"Fetching snapshot date {snapshot_date}...")
         url = f"http://data.insideairbnb.com/australia/vic/melbourne/{snapshot_date}" \
             "/data/listings.csv.gz"
         df = fetch_data(url)
         df_list.append(df)
 
     # Load Azure storage account credentials
-    print("Loading Azure credentials...")
+    logger.info("Loading Azure credentials...")
     with open("./cred.yaml") as f:
         conf = yaml.safe_load(f)
         account_name = conf["account_name"]
         account_key = conf["account_key"]
 
     # Create Data Lake directory client
-    print("Creating Data Lake directory client...")
+    logger.info("Creating Data Lake directory client...")
     container_name = "airbnb-host-analytics"
     directory_name = "bronze"
     directory_client = create_dir_client(
@@ -135,14 +135,14 @@ def main():
     )
 
     # Upload dataset to ADLS as a parquet file
-    print("Uploading datasets to ADLS...")
+    logger.info("Uploading datasets to ADLS...")
     for i, dataset in enumerate(df_list):
-        print(f"Uploading snapshot date {snapshot_dates[i]}...")
+        logger.info(f"Uploading snapshot date {snapshot_dates[i]}...")
         file_name = f"raw_dataset_{snapshot_dates[i]}.parquet"
         parquet_file = dataset.to_parquet()
         upload_file(parquet_file, file_name, directory_client)
     
-    print("Process has completed.")
+    logger.info("Process has completed.")
 
 
 if __name__ == "__main__":

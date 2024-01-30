@@ -10,14 +10,14 @@ from utils import utils
 
 
 def main():
-    print("Process has started.")
+    logger.info("Process has started.")
 
     # Configure storage account credentials
-    print("Configuring storage account credentials...")
+    logger.info("Configuring storage account credentials...")
     utils.set_azure_storage_config(spark, dbutils)
 
     # Load processed dataset
-    print("Loading processed dataset...")
+    logger.info("Loading processed dataset...")
     container_name, file_path, file_type = (
         "airbnb-host-analytics",
         "silver/airbnb_processed",
@@ -46,7 +46,7 @@ def main():
     
     And this dimension follows SCD type 2.
     """
-    print("Creating Host dimension table...")
+    logger.info("Creating Host dimension table...")
     query_name = "airbnb_dim_host"
     query = utils.get_query(query_name)
     df_airbnb_dim_host = utils.process_data(spark, df_airbnb_processed, query)
@@ -66,7 +66,7 @@ def main():
 
     And this dimension follows SCD type 2.
     """
-    print("Creating Listing dimension table...")
+    logger.info("Creating Listing dimension table...")
     query_name = "airbnb_dim_listing"
     query = utils.get_query(query_name)
     df_airbnb_dim_listing = utils.process_data(spark, df_airbnb_processed, query)
@@ -84,7 +84,7 @@ def main():
     This table is a monthly snapshot fact table containing 
     occupancy rate records at monthly intervals.
     """
-    print("Creating Occupancy fact table...")
+    logger.info("Creating Occupancy fact table...")
     query_name = "airbnb_fact_occupancy"
     query = utils.get_query(query_name)
     df_airbnb_fact_occupancy = utils.process_data(spark, df_airbnb_processed, query)
@@ -97,7 +97,7 @@ def main():
     }
     save_mode = "overwrite"
     for file_path, df in df_path_dict.items():
-        print(f"Saving table {file_path[4:]}...")
+        logger.info(f"Saving table {file_path[4:]}...")
         utils.load_df_to_adls(
             spark,
             dbutils,
@@ -108,7 +108,7 @@ def main():
             save_mode
         )
 
-    print("Process has completed.")
+    logger.info("Process has completed.")
 
 
 if __name__ == "__main__":

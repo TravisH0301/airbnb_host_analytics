@@ -60,14 +60,14 @@ def load_compile_data(
 
 
 def main():
-    print("Process has started.")
+    logger.info("Process has started.")
 
     # Configure storage account credentials
-    print("Configuring storage account credentials...")
+    logger.info("Configuring storage account credentials...")
     utils.set_azure_storage_config(spark, dbutils)
 
     # Load raw Airbnb datasets
-    print("Loading raw Airbnb datasets...")
+    logger.info("Loading raw Airbnb datasets...")
     snapshot_dates = [
         "2023-03-13",
         "2023-04-09",
@@ -106,7 +106,7 @@ def main():
     Monash, Moonee Valley, Moreland, Mornington Peninsula, Nillumbik, Port Phillip,
     Stonnington, Whitehorse, Whittlesea, Wyndham, Yarra, Yarra Ranges
     """
-    print("Processing raw dataset...")
+    logger.info("Processing raw dataset...")
     ## Load data processing query
     query_name = "airbnb_processed"
     query = utils.get_query(query_name)
@@ -114,7 +114,7 @@ def main():
     df_airbnb_processed = utils.process_data(spark, df_raw_compiled, query)
 
     # Store processed dataset as delta lake table in silver layer
-    print("Saving Delta Lake tables in silver layer...")
+    logger.info("Saving Delta Lake tables in silver layer...")
     file_path, file_type, save_mode = (
         "silver/airbnb_processed",
         "delta",
@@ -130,7 +130,7 @@ def main():
         save_mode
     )
     
-    print("Process has completed.")
+    logger.info("Process has completed.")
 
 
 if __name__ == "__main__":
