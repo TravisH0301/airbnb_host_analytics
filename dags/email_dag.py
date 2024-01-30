@@ -35,7 +35,7 @@ def send_failure_status_email(context):
 
 
 with DAG(
-    dag_id="test email",
+    dag_id="test_email",
     default_args={
         "owner": "Travis Hong",
         "start_date": days_ago(1),
