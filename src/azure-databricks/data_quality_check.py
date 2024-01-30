@@ -98,7 +98,7 @@ def main():
             f" results: \n\n{checkpoint_results}"
         )
     else:
-        logger.info(f"Test results: {checkpoint_result_status}")
+        logger.info(f"Data Quality Test results: {checkpoint_result_status}")
 
 
 if __name__ == "__main__":
