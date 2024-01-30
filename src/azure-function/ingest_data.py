@@ -41,6 +41,30 @@ def fetch_data(url):
     return df
 
 
+def load_storage_cred(yaml_path):
+    """This function loads Azure storage account
+    credentials from the given YAML file.
+    
+    Parameters
+    ----------
+    yaml_path: str
+        Path to YAML file
+        
+    Returns
+    -------
+    account_name: str
+        Storage account name
+    account_key: str
+        Storage account key
+    """
+    with open("./cred.yaml") as f:
+        conf = yaml.safe_load(f)
+        account_name = conf["account_name"]
+        account_key = conf["account_key"]
+
+    return (account_name, account_key)
+
+
 def create_dir_client(
         account_name,
         account_key,
@@ -118,10 +142,8 @@ def main():
 
     # Load Azure storage account credentials
     logger.info("Loading Azure credentials...")
-    with open("./cred.yaml") as f:
-        conf = yaml.safe_load(f)
-        account_name = conf["account_name"]
-        account_key = conf["account_key"]
+    yaml_path = "./cred.yaml"
+    account_name, account_key = load_storage_cred(yaml_path)
 
     # Create Data Lake directory client
     logger.info("Creating Data Lake directory client...")
