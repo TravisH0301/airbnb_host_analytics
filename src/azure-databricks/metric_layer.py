@@ -1,7 +1,7 @@
 ###############################################################################
 # Name: metric_layer.py
 # Description: This script creates a metric layer on top of the dimensional
-#              data model and stores into the gold layer of the ADLS gen2.
+#              data model and stores into the gold layer of the data lakehouse.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################

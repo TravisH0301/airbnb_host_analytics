@@ -1,7 +1,7 @@
 ###############################################################################
 # Name: ingest_data.py
 # Description: This script fetches the Melbourne Airbnb listing data via API
-#              and loads into the bronze layer of the ADLS gen2.
+#              and loads into the bronze layer of the data lakehouse.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################

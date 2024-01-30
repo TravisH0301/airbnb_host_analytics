@@ -86,9 +86,8 @@ def main():
     )
     context.add_or_update_checkpoint(checkpoint=checkpoint)
 
-    # Run checkpoint
+    # Run checkpoint to validate data quality
     checkpoint_result = checkpoint.run()
-
     checkpoint_result_status = checkpoint_result.list_validation_results()[0]["success"]
     checkpoint_results = checkpoint_result.list_validation_results()[0]["results"]
 
@@ -99,6 +98,8 @@ def main():
         )
     else:
         logger.info(f"Data Quality Test results: {checkpoint_result_status}")
+
+    logger.info("Process has completed.")
 
 
 if __name__ == "__main__":

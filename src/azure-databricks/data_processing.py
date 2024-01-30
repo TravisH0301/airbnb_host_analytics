@@ -1,8 +1,7 @@
 ###############################################################################
 # Name: data_processing.py
 # Description: This script processes the raw Airbnb datasets and load the 
-#              compiled dataset into the silver layer of ADLS gen2
-#              as a delta lake table.
+#              compiled dataset into the silver layer of the data lakehouse.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
