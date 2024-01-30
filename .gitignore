@@ -1,6 +1,7 @@
 *.drawio
 
 cred*
+mock*
 
 test.py
 
