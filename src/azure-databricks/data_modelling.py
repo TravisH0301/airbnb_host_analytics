@@ -101,7 +101,7 @@ def main():
     }
     save_mode = "overwrite"
     for file_path, df in df_path_dict.items():
-        logger.info(f"Saving table {file_path[4:]} into gold-dev layer...")
+        logger.info(f"Saving table {file_path[9:]} into gold-dev layer...")
         utils.load_df_to_adls(
             spark,
             dbutils,
