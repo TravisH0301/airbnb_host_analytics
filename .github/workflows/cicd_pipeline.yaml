@@ -14,7 +14,12 @@ jobs:
       - name: Install dependencies
         run: |
           echo "Install dependencies..."
+          echo "pwd"
           pwd
+          echo "ls"
+          ls
+          echo "ls .."
+          ls ..
           pip install -r ./tests/requirements.txt
           echo "Installation completed."
       - name: Run test script - ./tests/test_ingest_data.py
