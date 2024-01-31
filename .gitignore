@@ -1,11 +1,13 @@
-*.drawio
-
 cred*
 mock*
+terraform*
 
 test.py
 
+
 .vscode/
 .databricks
+.terraform
+*.drawio
 
 __pycache__
