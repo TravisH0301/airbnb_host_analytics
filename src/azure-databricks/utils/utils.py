@@ -10,7 +10,7 @@ import yaml
 import logging
 
 
-def get_query(query_name):
+def get_query(query_name, yaml_path="./conf/sql.yaml"):
     """This function retrieves a query from a
     YAML configuration file.
     
@@ -18,6 +18,8 @@ def get_query(query_name):
     ----------
     query_name: str
         Name of query in the conf file
+    yaml_path: str, optional
+        Path of YAML file. By default, ./conf/sql.yaml
 
     Returns
     -------
@@ -25,7 +27,7 @@ def get_query(query_name):
         Retrieved query
     """
     # Retrieve query from conf file
-    with open("./conf/sql.yaml") as f:
+    with open(yaml_path) as f:
         conf = yaml.safe_load(f)
         query = conf[query_name]
 
