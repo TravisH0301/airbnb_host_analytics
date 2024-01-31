@@ -1,7 +1,8 @@
 ###############################################################################
-# Name: data_quality_check.py
-# Description: This script validates data quality of the tables in the gold
-#              layer of the data lakehouse using Great Expectations.
+# Name: metric_quality_check.py
+# Description: This script validates data quality of the metric table
+#              in the gold-dev layer. Once, validated the table is loaded into
+#              the gold layer of the data lakehouse.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
@@ -25,11 +26,11 @@ def main():
     logger.info("Creating Great Expectations data context...")
     context = gx.get_context()
 
-    # Load metric layer dataset
-    logger.info("Loading metric layer dataset...")
+    # Load metric layer dataset from gold-dev layer
+    logger.info("Loading metric layer dataset from gold-dev layer...")
     container_name, file_path, file_type = (
         "airbnb-host-analytics",
-        "gold/airbnb_metric_host_occupancy",
+        "gold-dev/airbnb_metric_host_occupancy",
         "delta"
     )
     df = utils.load_data_to_df(
@@ -91,13 +92,29 @@ def main():
     checkpoint_result_status = checkpoint_result.list_validation_results()[0]["success"]
     checkpoint_results = checkpoint_result.list_validation_results()[0]["results"]
 
-    if checkpoint_result_status is False:
+    # Move table into gold layer if validated
+    if checkpoint_result_status is True:
+        logger.info(f"Data Quality Test results: {checkpoint_result_status}")
+        logger.info("Moving metric table to gold layer...")
+        file_path, save_mode = (
+            "gold/airbnb_metric_host_occupancy",
+            "overwrite"
+        )
+        utils.load_df_to_adls(
+            spark,
+            dbutils,
+            df,
+            container_name,
+            file_path,
+            file_type,
+            save_mode
+        )
+
+    else:
         raise Exception (
             "Great Expectation checkpoint has failed with the following"
             f" results: \n\n{checkpoint_results}"
         )
-    else:
-        logger.info(f"Data Quality Test results: {checkpoint_result_status}")
 
     logger.info("Process has completed.")
 
