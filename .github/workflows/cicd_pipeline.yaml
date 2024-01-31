@@ -18,5 +18,5 @@ jobs:
       - name: Run test script - ./tests/test_ingest_data.py
         run: |
           echo "Conducting first test script..."
-          python -m unitest ./tests/test_ingest_data.py
+          python -m unittest ./tests/test_ingest_data.py
           echo "Test completed."
