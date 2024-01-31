@@ -1,6 +1,6 @@
 ###############################################################################
 # Name: test_utils.py
-# Description: This script conducts unit test and integration test with 
+# Description: This script conducts unit test and integration test with
 #              utils.py script.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
@@ -31,7 +31,7 @@ class test_functions(TestCase):
         # Test function
         expected_result = "SELECT * FROM A"
         query = get_query(mock_query_name, mock_yaml_filename)
-        
+
         self.assertEqual(query, (expected_result))
 
     def test_process_data(self):
@@ -58,5 +58,3 @@ class test_functions(TestCase):
 
 if __name__ == "__main__":
     main()
-
-

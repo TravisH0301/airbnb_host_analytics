@@ -10,7 +10,7 @@ import logging
 
 from ingest_data import main
 
-    
+
 app = func.FunctionApp(http_auth_level=func.AuthLevel.FUNCTION)
 
 @app.route(route="data_ingestion")

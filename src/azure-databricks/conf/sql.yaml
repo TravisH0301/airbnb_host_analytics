@@ -14,7 +14,7 @@ airbnb_processed: >
             CAST(
                 LENGTH(RTRIM(LTRIM(host_about)))
                 - LENGTH(REPLACE(RTRIM(LTRIM(host_about)), ' ', ''))
-                + 1 
+                + 1
                 AS NUMERIC
             ) AS ABOUT_WORD_COUNT,
             host_is_superhost AS IS_SUPERHOST,
@@ -133,7 +133,7 @@ airbnb_dim_host: >
 
 airbnb_dim_listing: >
     WITH BASE AS (
-        SELECT 
+        SELECT
             LISTING_ID,
             MUNICIPALITY,
             LATITUDE,
@@ -208,7 +208,7 @@ airbnb_metric_host_occupancy: >
             AND HOST.CURRENT_IND = 'Y'
             AND LISTING.CURRENT_IND = 'Y'
             AND FACT.SNAPSHOT_YEAR_MONTH = (
-                SELECT MAX(SNAPSHOT_YEAR_MONTH) FROM airbnb_fact_occupancy    
+                SELECT MAX(SNAPSHOT_YEAR_MONTH) FROM airbnb_fact_occupancy
             )
     )
     SELECT DISTINCT
@@ -236,4 +236,4 @@ airbnb_metric_host_occupancy: >
         END AS HOST_ABOUT_LENGTH_CATEGORY,
         AVERAGE_OCCUPANCY_RATE,
         SNAPSHOT_YEAR_MONTH
-    FROM BASE    
+    FROM BASE

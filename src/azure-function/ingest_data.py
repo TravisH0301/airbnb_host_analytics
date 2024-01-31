@@ -14,15 +14,15 @@ import pandas as pd
 from azure.storage.filedatalake import DataLakeServiceClient
 
 
-def fetch_data(url): 
+def fetch_data(url):
     """This function fetches Airbnb data using
     the given URL, and returns it as a dataframe.
-    
+
     Parameters
     ----------
     url: str
         Airbnb data API URL
-        
+
     Returns
     -------
     df: pandas dataframe
@@ -44,12 +44,12 @@ def fetch_data(url):
 def load_storage_cred(yaml_path):
     """This function loads Azure storage account
     credentials from the given YAML file.
-    
+
     Parameters
     ----------
     yaml_path: str
         Path to YAML file
-        
+
     Returns
     -------
     account_name: str
@@ -72,7 +72,7 @@ def create_dir_client(
         directory_name
 ):
     """This function returns the Data Lake directory client.
-    
+
     Parameters
     ----------
     account_name: str
@@ -83,7 +83,7 @@ def create_dir_client(
         ADLS gen2 container name
     directory_name: str
         ADLS gen2 directory name
-    
+
     Returns
     -------
     object
@@ -97,12 +97,12 @@ def create_dir_client(
     file_system_client = service_client.get_file_system_client(file_system=container_name)
 
     return file_system_client.get_directory_client(directory=directory_name)
-            
+
 
 def upload_file(file, file_name, directory_client):
     """This function uploads the given bytes file into the
     ADLS directory.
-    
+
     Parameters
     ----------
     file: bytes
@@ -111,7 +111,7 @@ def upload_file(file, file_name, directory_client):
         File name
     directory_client: object
         Data Lake directory client
-        
+
     Returns
     -------
     None
@@ -163,14 +163,10 @@ def main():
         file_name = f"raw_dataset_{snapshot_dates[i]}.parquet"
         parquet_file = dataset.to_parquet()
         upload_file(parquet_file, file_name, directory_client)
-    
+
     logger.info("Process has completed.")
 
 
 if __name__ == "__main__":
     logger = utils.set_logger()
     main()
-
-    
-
-    

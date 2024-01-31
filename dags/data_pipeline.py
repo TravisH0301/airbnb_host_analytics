@@ -5,25 +5,22 @@
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
-from datetime import datetime
-
 from airflow import DAG
 from airflow.models import Variable
 from airflow.utils.dates import days_ago
 from airflow.utils.email import send_email
 from airflow.operators.bash import BashOperator
 from airflow.providers.databricks.operators.databricks import DatabricksRunNowOperator
-  
+
 
 def send_success_alert_email(context):
     """This function sends out an email alert upon
     successful task execution.
-    
+
     This function relies on the SMTP configurations in Airflow.
     https://airflow.apache.org/docs/apache-airflow/stable/howto/email-config.html#using-default-smtp
     """
     task_instance = context['task_instance']
-    task_status = task_instance.current_state()
 
     to_email = Variable.get("email_receiver")
     subject = f"[JOB COMPLETE] Airflow - {task_instance.task_id}"
@@ -37,12 +34,11 @@ def send_success_alert_email(context):
 def send_failure_alert_email(context):
     """This function sends out an email alert upon
      task execution failure.
-    
+
     This function relies on the SMTP configurations in Airflow.
     https://airflow.apache.org/docs/apache-airflow/stable/howto/email-config.html#using-default-smtp
     """
     task_instance = context['task_instance']
-    task_status = task_instance.current_state()
 
     to_email = Variable.get("email_receiver")
     subject = f"[JOB FAILED] Airflow - {task_instance.task_id}"
@@ -64,11 +60,11 @@ with DAG(
     },
     schedule_interval=None
 ) as dag:
-    
+
     # Task to ingest raw datasets into bronze layer
     var_key = "function-key"
     function_key = Variable.get(var_key)
-    function_app_name = "azure-airbnb-load-data" 
+    function_app_name = "azure-airbnb-load-data"
     function_name = "data_ingestion"
     data_ingestion = BashOperator(
         task_id="data_ingestion",
@@ -86,21 +82,21 @@ with DAG(
         databricks_conn_id = 'databricks_default',
         job_id = 128784675279690
     )
-    
+
     # Task to create dimensional model and load tables to gold layer
     data_modelling = DatabricksRunNowOperator(
         task_id = 'data_modelling',
         databricks_conn_id = 'databricks_default',
         job_id = 851806766336090
     )
-    
+
     # Task to create metric layer and load table to gold layer
     metric_layer = DatabricksRunNowOperator(
         task_id = 'metric_layer',
         databricks_conn_id = 'databricks_default',
         job_id = 711715871126399
     )
-    
+
     # Task to validate data quality of gold layer
     data_quality_check = DatabricksRunNowOperator(
         task_id = 'data_quality_check',

@@ -9,11 +9,13 @@ os.system("pip install pyyaml")
 import yaml
 import logging
 
+from pathlib import Path
+
 
 def get_query(query_name, yaml_path="./conf/sql.yaml"):
     """This function retrieves a query from a
     YAML configuration file.
-    
+
     Parameters
     ----------
     query_name: str
@@ -40,8 +42,8 @@ def set_azure_storage_config(spark, dbutils):
 
     Note that Spark related objects need to be passed from
     the script running directly on the Databricks cluster.
-    This is because the external module is outside of the 
-    runtime scope, hence having no access to the runtime 
+    This is because the external module is outside of the
+    runtime scope, hence having no access to the runtime
     Spark configurations and features.
 
     Parameters
@@ -73,9 +75,9 @@ def set_azure_storage_config(spark, dbutils):
 
 def load_data_to_df(spark, dbutils, container_name, file_path, file_type):
     """This function reads a dataset from the given
-    ADLS source file location and returns as a 
+    ADLS source file location and returns as a
     Spark dataframe.
-    
+
     Parameters
     ----------
     spark: object
@@ -88,7 +90,7 @@ def load_data_to_df(spark, dbutils, container_name, file_path, file_type):
         Source file path in ADLS
     file_type: str
         Dataset storage format - e.g., parquet or delta
-        
+
     Returns
     -------
     Spark dataframe
@@ -96,7 +98,7 @@ def load_data_to_df(spark, dbutils, container_name, file_path, file_type):
     storage_account_name = set_azure_storage_config(spark, dbutils)
     source_location = f"abfss://{container_name}@{storage_account_name}" \
         f".dfs.core.windows.net/{file_path}"
-    
+
     return spark.read.format(file_type).load(source_location)
 
 
@@ -111,7 +113,7 @@ def load_df_to_adls(
     ):
     """This function loads Spark dataframe
     into the ADLS gen2.
-    
+
     Parameters
     ----------
     spark: object
@@ -142,7 +144,7 @@ def load_df_to_adls(
 def process_data(spark, df, query):
     """This function processes the given dataset
     using Spark SQL and returns a dataframe.
-    
+
     Parameters
     ----------
     spark: object
@@ -151,7 +153,7 @@ def process_data(spark, df, query):
         Spark dataframe
     query: str
         SQL query to execute
-        
+
     Returns
     -------
     Spark dataframe

@@ -1,6 +1,6 @@
 ###############################################################################
 # Name: data_quality_check.py
-# Description: This script validates data quality of the tables in the gold 
+# Description: This script validates data quality of the tables in the gold
 #              layer of the data lakehouse using Great Expectations.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
@@ -93,7 +93,7 @@ def main():
 
     if checkpoint_result_status is False:
         raise Exception (
-            "Great Expectation checkpoint has failed with the following" \
+            "Great Expectation checkpoint has failed with the following"
             f" results: \n\n{checkpoint_results}"
         )
     else:

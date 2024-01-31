@@ -19,7 +19,7 @@ class test_functions(TestCase):
         url = "http://data.insideairbnb.com/australia/vic/melbourne/2023-03-13" \
             "/data/listings.csv.gz"
         df = fetch_data(url)
-        
+
         self.assertFalse(df.empty)
 
     def test_load_storage_cred(self):
@@ -35,11 +35,9 @@ class test_functions(TestCase):
         # Test function
         expected_result = ("abc", "123")
         account_cred = load_storage_cred(mock_yaml_filename)
-        
+
         self.assertEqual(account_cred, expected_result)
 
 
 if __name__ == "__main__":
     main()
-
-

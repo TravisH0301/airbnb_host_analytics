@@ -42,8 +42,8 @@ def main():
     """Metric layer table contains records about host's characteristics
     and their listing's occupancy rate in the next 30 days.
     This table is built on top of the dimensional data model to allows
-    one to easily analyse the effect of host characteristics on thier 
-    listing performance. 
+    one to easily analyse the effect of host characteristics on thier
+    listing performance.
 
     For the analytics purpose, the table is built with the up-to-date
     data from the dimensional model with the following attributes:
@@ -76,7 +76,7 @@ def main():
     query_name = "airbnb_metric_host_occupancy"
     query = utils.get_query(query_name)
     df_airbnb_metric = spark.sql(query)
-    
+
     # Save metric layer table as Delta Lake tables in ADLS
     logger.info("Saving metric layer table...")
     file_path = "gold/airbnb_metric_host_occupancy"

@@ -1,13 +1,12 @@
 ###############################################################################
 # Name: data_processing.py
-# Description: This script processes the raw Airbnb datasets and load the 
+# Description: This script processes the raw Airbnb datasets and load the
 #              compiled dataset into the silver layer of the data lakehouse.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
 from functools import reduce
 
-import pandas as pd
 from pyspark.sql import DataFrame
 
 from utils import utils
@@ -21,10 +20,10 @@ def load_compile_data(
         file_type,
         snapshot_dates
     ):
-    """This function loads the raw Airbnb datasets from 
+    """This function loads the raw Airbnb datasets from
     the bronze layer of the ADLS. The datasets are then
     compiled and returned as a dataframe.
-    
+
     Parameters
     ----------
     spark: object
@@ -39,7 +38,7 @@ def load_compile_data(
         Dataset storage format - e.g., parquet or delta
     snapshot_date: list
         list of snapshot dates in string
-        
+
     Returns
     -------
     dataframe
@@ -98,7 +97,7 @@ def main():
     - Listing must be an entire home/apt to limit diversity of the listing type.
     - Price must be within the range between median and upper limit (median + 1.5 IQR)
       to filter out outliers and reduce price factor.
-    
+
     *Metropolitan Melbourne municipalities: Banyule, Bayside, Boroondara, Brimbank,
     Cardinia, Casey, Darebin, Frankston, Glen Eira, Greater Dandenong, Hobsons Bay,
     Hume, Kingston, Knox, Manningham, Maribyrnong, Maroondah, Melbourne, Melton,
@@ -128,7 +127,7 @@ def main():
         file_type,
         save_mode
     )
-    
+
     logger.info("Process has completed.")
 
 

@@ -43,7 +43,7 @@ def main():
     - START_DATE: SCD type 2 start date
     - END_DATE: SCD type 2 end date
     - CURRENT_IND: Indicator of current record
-    
+
     And this dimension follows SCD type 2.
     """
     logger.info("Creating Host dimension table...")
@@ -72,7 +72,7 @@ def main():
     df_airbnb_dim_listing = utils.process_data(spark, df_airbnb_processed, query)
 
     # Model Occupancy fact table
-    """Occupancy fact table contains occupancy rate within the 
+    """Occupancy fact table contains occupancy rate within the
     next 30 days of the listing properties with the following
     attributes:
     - OCCUPANCY_ID: Unique identifiation
@@ -81,7 +81,7 @@ def main():
     - OCCUPANCY_RATE: Occupancy rate within next 30 days
     - SNAPSHOT_YEAR_MONTH: Snapshot year month in YYYYMM
 
-    This table is a monthly snapshot fact table containing 
+    This table is a monthly snapshot fact table containing
     occupancy rate records at monthly intervals.
     """
     logger.info("Creating Occupancy fact table...")
