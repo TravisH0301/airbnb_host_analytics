@@ -5,14 +5,19 @@ jobs:
   Conduct-Testing:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Cloning repository..."
       - name: Clone repository code
-        uses: actions/checkout@v4
-  
-      - run: echo "Install dependencies..."
+        run: |
+          echo "Cloning repository..."
+          git clone https://github.com/TravisH0301/airbnb_host_analytics.git
+          cd airbnb_host_analytics
+          echo "Cloning completed."
       - name: Install dependencies
-        run: pip install -r requirements.txt
-      
-      - run: echo "Conducting first test script..."
+        run: |
+          echo "Install dependencies..."
+          pip install -r requirements.txt
+          echo "Installation completed."
       - name: Run test script - test_ingest_data.py
-        run: python -m unitest /test/test_ingest_data.py
+        run: |
+          echo "Conducting first test script..."
+          python -m unitest /test/test_ingest_data.py
+          echo "Test completed."
