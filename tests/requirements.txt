@@ -1,4 +1,4 @@
-pyspark[sql]
+pyspark[sql]==3.5.0
 googleapis-common-protos==1.56.4
 grpcio-status==1.48.2
 requests==2.31.0
