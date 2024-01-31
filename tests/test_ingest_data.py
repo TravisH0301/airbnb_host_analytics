@@ -34,9 +34,10 @@ class test_functions(TestCase):
         with open(mock_yaml_filename, "w") as file:
             yaml.dump(mock_data, file, default_flow_style=False)
         # Test function
+        expected_result = ("abc", "123")
         account_cred = load_storage_cred(mock_yaml_filename)
         
-        self.assertEqual(account_cred, ("abc", "123"))
+        self.assertEqual(account_cred, expected_result)
 
 if __name__ == "__main__":
     main()
