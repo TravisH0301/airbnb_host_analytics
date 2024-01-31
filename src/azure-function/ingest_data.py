@@ -9,9 +9,13 @@ import requests
 import gzip
 import yaml
 import io
+import sys
+sys.path.append("./src/azure-databricks")
 
 import pandas as pd
 from azure.storage.filedatalake import DataLakeServiceClient
+
+from utils import utils
 
 
 def fetch_data(url):
