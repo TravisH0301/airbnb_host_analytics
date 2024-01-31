@@ -1,0 +1,40 @@
+expectation_suite_name: metric_layer_expectation_suite
+expectations:
+  - expectation_type: "expect_column_values_to_not_be_null"
+    kwargs:
+      column: "HOST_ID"
+  - expectation_type: "expect_column_values_to_be_in_set"
+    kwargs:
+      column: "IS_MULTI_LISTING"
+      value_set: ["Y", "N"]
+  - expectation_type: "expect_column_values_to_be_in_set"
+    kwargs:
+      column: "YEAR_OF_EXP_CATEGORY"
+      value_set: ["0", "1-4", "4-7", "7-10", ">10"]
+  - expectation_type: "expect_column_values_to_be_in_set"
+    kwargs:
+      column: "HAS_PROFILE_PHOTO"
+      value_set: ["Y", "N"]
+  - expectation_type: "expect_column_values_to_be_in_set"
+    kwargs:
+      column: "IS_SUPERHOST"
+      value_set: ["Y", "N"]
+  - expectation_type: "expect_column_values_to_be_in_set"
+    kwargs:
+      column: "TOTAL_REVIEW_CATEGORY"
+      value_set: ["0", "1-10", "10-50", "50-100", ">100"]
+  - expectation_type: "expect_column_values_to_be_in_set"
+    kwargs:
+      column: "HOST_ABOUT_LENGTH_CATEGORY"
+      value_set: ["Short", "Concise", "Detailed", "Lengthy"]
+  - expectation_type: "expect_column_values_to_be_between"
+    kwargs:
+      column: "AVERAGE_OCCUPANCY_RATE"
+      min_value: 0
+      max_value: 100
+  - expectation_type: "expect_column_values_to_be_between"
+    kwargs:
+      column: "SNAPSHOT_YEAR_MONTH"
+      min_value: 200001
+      max_value: 999912
+
