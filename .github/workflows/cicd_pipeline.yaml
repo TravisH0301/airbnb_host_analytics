@@ -14,9 +14,10 @@ jobs:
       - name: Install dependencies
         run: |
           echo "Install dependencies..."
-          pip install -r tests/requirements.txt
+          pwd
+          pip install -r ./tests/requirements.txt
           echo "Installation completed."
-      - name: Run test script - tests/test_ingest_data.py
+      - name: Run test script - ./tests/test_ingest_data.py
         run: |
           echo "Conducting first test script..."
           python -m unitest /test/test_ingest_data.py
