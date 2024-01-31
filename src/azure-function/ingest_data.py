@@ -117,7 +117,7 @@ def upload_file(file, file_name, directory_client):
     None
     """
     file_client = directory_client.create_file(file_name)
-    file_client.upload_data(data=file, overwrite=True) #Either of the lines works
+    file_client.upload_data(data=file, overwrite=True)
     file_client.flush_data(len(file))
 
 
