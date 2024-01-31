@@ -1,6 +1,6 @@
 pyspark[sql]
 googleapis-common-protos==1.56.4
-grpcio-status==1.48
+grpcio-status==1.48.2
 requests==2.31.0
 pyyaml==6.0.1
 azure-storage-file-datalake==12.14.0
