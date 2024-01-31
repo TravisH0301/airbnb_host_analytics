@@ -1,7 +1,8 @@
 ###############################################################################
 # Name: metric_layer.py
 # Description: This script creates a metric layer on top of the dimensional
-#              data model and stores into the gold layer of the data lakehouse.
+#              data model and stores into the gold-dev layer of the data 
+#              lakehouse.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
@@ -15,7 +16,7 @@ def main():
     logger.info("Configuring storage account credentials...")
     utils.set_azure_storage_config(spark, dbutils)
 
-    # Load dimensional data model
+    # Load dimensional data model from gold layer
     logger.info("Loading dimensional data model...")
     container_name, file_type = (
         "airbnb-host-analytics",
@@ -77,9 +78,13 @@ def main():
     query = utils.get_query(query_name)
     df_airbnb_metric = spark.sql(query)
 
-    # Save metric layer table as Delta Lake tables in ADLS
-    logger.info("Saving metric layer table...")
-    file_path = "gold/airbnb_metric_host_occupancy"
+    # Load metric layer table into gold-dev layer
+    """The table is loaded into the gold-dev layer.
+    The table will undergo data quality check before
+    moving into the gold layer.
+    """
+    logger.info("Loading metric layer table into gold-dev layer...")
+    file_path = "gold-dev/airbnb_metric_host_occupancy"
     save_mode = "overwrite"
     utils.load_df_to_adls(
         spark,

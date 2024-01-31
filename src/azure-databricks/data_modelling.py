@@ -1,7 +1,7 @@
 ###############################################################################
 # Name: data_modelling.py
 # Description: This script conducts dimensional modelling to build dimension and
-#              fact tables. The tables are loaded into the gold layer of
+#              fact tables. The tables are loaded into the gold-dev layer of
 #              the data lakehouse.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
@@ -89,15 +89,19 @@ def main():
     query = utils.get_query(query_name)
     df_airbnb_fact_occupancy = utils.process_data(spark, df_airbnb_processed, query)
 
-    # Save data model as Delta Lake tables in ADLS
+    # Save data model in gold-dev layer of data lakehouse
+    """The tables are loaded into the gold-dev layer first.
+    The data quality of the tables are going to be checked prior
+    to entering the gold layer.
+    """
     df_path_dict = {
-        "gold/airbnb_dim_host": df_airbnb_dim_host,
-        "gold/airbnb_dim_listing": df_airbnb_dim_listing,
-        "gold/airbnb_fact_occupancy": df_airbnb_fact_occupancy
+        "gold-dev/airbnb_dim_host": df_airbnb_dim_host,
+        "gold-dev/airbnb_dim_listing": df_airbnb_dim_listing,
+        "gold-dev/airbnb_fact_occupancy": df_airbnb_fact_occupancy
     }
     save_mode = "overwrite"
     for file_path, df in df_path_dict.items():
-        logger.info(f"Saving table {file_path[4:]}...")
+        logger.info(f"Saving table {file_path[4:]} into gold-dev layer...")
         utils.load_df_to_adls(
             spark,
             dbutils,
