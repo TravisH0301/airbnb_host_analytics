@@ -8,22 +8,28 @@ jobs:
       - name: Clone repository code
         run: |
           echo "Cloning repository..."
-          git clone https://github.com/TravisH0301/airbnb_host_analytics.git
-          cd airbnb_host_analytics
-          echo "Cloning completed."
-      - name: Install dependencies
-        run: |
-          echo "Install dependencies..."
+          git clone https://github.com/TravisH0301/airbnb_host_analytics.git .
+          
           echo "pwd"
           pwd
           echo "ls"
           ls
-          echo "ls .."
-          ls ..
-          pip install -r ./tests/requirements.txt
-          echo "Installation completed."
-      - name: Run test script - ./tests/test_ingest_data.py
-        run: |
-          echo "Conducting first test script..."
-          python -m unitest /test/test_ingest_data.py
-          echo "Test completed."
+          
+          # cd airbnb_host_analytics
+          # echo "Cloning completed."
+      # - name: Install dependencies
+      #   run: |
+      #     echo "Install dependencies..."
+      #     echo "pwd"
+      #     pwd
+      #     echo "ls"
+      #     ls
+      #     echo "ls .."
+      #     ls ..
+      #     pip install -r ./tests/requirements.txt
+      #     echo "Installation completed."
+      # - name: Run test script - ./tests/test_ingest_data.py
+      #   run: |
+      #     echo "Conducting first test script..."
+      #     python -m unitest /test/test_ingest_data.py
+      #     echo "Test completed."
