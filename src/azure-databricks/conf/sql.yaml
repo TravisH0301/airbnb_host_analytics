@@ -103,16 +103,16 @@ airbnb_dim_host: >
             CASE
                 WHEN IS_SUPERHOST = 't' THEN 'Y'
                 WHEN IS_SUPERHOST = 'f' THEN 'N'
-                ELSE NULL
+                ELSE 'N'
             END AS IS_SUPERHOST,
             CASE
                 WHEN HAS_PROFILE_PHOTO = 't' THEN 'Y'
                 WHEN HAS_PROFILE_PHOTO = 'f' THEN 'N'
-                ELSE NULL
+                ELSE 'N'
             END AS HAS_PROFILE_PHOTO,
-            ABOUT_WORD_COUNT,
-            YEAR_OF_EXP,
-            LISTING_COUNT,
+            COALESCE(ABOUT_WORD_COUNT, 0) AS ABOUT_WORD_COUNT,
+            COALESCE(YEAR_OF_EXP, 0) AS YEAR_OF_EXP,
+            COALESCE(LISTING_COUNT, 0) AS LISTING_COUNT,
             SNAPSHOT_DATE AS START_DATE,
             LEAD(SNAPSHOT_DATE) OVER (PARTITION BY HOST_ID ORDER BY SNAPSHOT_DATE) AS END_DATE,
             ROW_NUMBER() OVER (PARTITION BY HOST_ID ORDER BY SNAPSHOT_DATE DESC) AS RN
@@ -135,11 +135,11 @@ airbnb_dim_listing: >
     WITH BASE AS (
         SELECT
             LISTING_ID,
-            MUNICIPALITY,
+            COALESCE(MUNICIPALITY, 'UNKNOWN') AS MUNICIPALITY,
             LATITUDE,
             LONGITUDE,
             PRICE,
-            REVIEW_COUNT,
+            COALESCE(REVIEW_COUNT, 0) AS REVIEW_COUNT,
             SNAPSHOT_DATE AS START_DATE,
             LEAD(SNAPSHOT_DATE) OVER (PARTITION BY HOST_ID ORDER BY SNAPSHOT_DATE) AS END_DATE,
             ROW_NUMBER() OVER (PARTITION BY HOST_ID ORDER BY SNAPSHOT_DATE DESC) AS RN
