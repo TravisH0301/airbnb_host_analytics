@@ -10,14 +10,13 @@ jobs:
           echo "Cloning repository..."
           git clone https://github.com/TravisH0301/airbnb_host_analytics.git .
           echo "Cloning completed."
-          pwd
-      # - name: Install dependencies
-      #   run: |
-      #     echo "Install dependencies..."
-      #     pip install -r /tests/requirements.txt
-      #     echo "Installation completed."
-      # - name: Run test script - /tests/test_ingest_data.py
-      #   run: |
-      #     echo "Conducting first test script..."
-      #     python -m unitest /test/test_ingest_data.py
-      #     echo "Test completed."
+      - name: Install dependencies
+        run: |
+          echo "Install dependencies..."
+          pip install -r ./tests/requirements.txt
+          echo "Installation completed."
+      - name: Run test script - ./tests/test_ingest_data.py
+        run: |
+          echo "Conducting first test script..."
+          python -m unitest ./tests/test_ingest_data.py
+          echo "Test completed."
