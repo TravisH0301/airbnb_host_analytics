@@ -1,0 +1,74 @@
+{
+  "expectation_suite_name": "dim_host_expectation_suite",
+  "expectations": [
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "HOST_ID"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "IS_SUPERHOST",
+        "value_set": ["Y", "N"]
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "HAS_PROFILE_PHOTO",
+        "value_set": ["Y", "N"]
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "ABOUT_WORD_COUNT",
+        "min_value": 0,
+        "max_value": null
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "YEAR_OF_EXP",
+        "min_value": 0,
+        "max_value": 100
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "LISTING_COUNT",
+        "min_value": 0,
+        "max_value": null
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "START_DATE",
+        "min_value": "2000-01-01",
+        "max_value": "9999-12-31",
+        "parse_strings_as_datetimes": true
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_between",
+      "kwargs": {
+        "column": "END_DATE",
+        "min_value": "2000-01-01",
+        "max_value": "9999-12-31",
+        "parse_strings_as_datetimes": true
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "CURRENT_IND",
+        "value_set": ["Y", "N"]
+      }
+    }
+  ]
+}
