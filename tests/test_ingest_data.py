@@ -1,7 +1,6 @@
 ###############################################################################
 # Name: test_ingest_data.py
-# Description: This script conducts unit test and integration test of 
-#              ingest_data.py script.
+# Description: This script conducts unit test with ingest_data.py script.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
@@ -38,6 +37,7 @@ class test_functions(TestCase):
         account_cred = load_storage_cred(mock_yaml_filename)
         
         self.assertEqual(account_cred, expected_result)
+
 
 if __name__ == "__main__":
     main()

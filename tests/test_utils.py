@@ -1,6 +1,6 @@
 ###############################################################################
 # Name: test_utils.py
-# Description: This script conducts unit test and integration test of 
+# Description: This script conducts unit test and integration test with 
 #              utils.py script.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
@@ -54,6 +54,7 @@ class test_functions(TestCase):
         result = process_data(spark, df, query).first()[0]
 
         self.assertEqual(result, expected_result)
+
 
 if __name__ == "__main__":
     main()
