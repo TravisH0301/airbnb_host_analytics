@@ -4,8 +4,6 @@
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
-import os
-os.system("pip install pyyaml")
 import yaml
 import logging
 
@@ -63,7 +61,8 @@ def set_azure_storage_config(spark, dbutils):
         key="storage-account-name"
     )
     storage_account_key = dbutils.secrets.get(
-        scope="key-vault-secret",key="storage-account-key"
+        scope="key-vault-secret",
+        key="storage-account-key"
     )
     spark.conf.set(
         f"fs.azure.account.key.{storage_account_name}.dfs.core.windows.net",
@@ -103,14 +102,14 @@ def load_data_to_df(spark, dbutils, container_name, file_path, file_type):
 
 
 def load_df_to_adls(
-        spark,
-        dbutils,
-        df,
-        container_name,
-        file_path,
-        file_type,
-        save_mode
-    ):
+    spark,
+    dbutils,
+    df,
+    container_name,
+    file_path,
+    file_type,
+    save_mode
+):
     """This function loads Spark dataframe
     into the ADLS gen2.
 
