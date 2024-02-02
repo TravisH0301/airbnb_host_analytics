@@ -7,8 +7,10 @@
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
 from utils import utils
-from utils.great_expectations_utils import gx_checkpoint_generator
-from utils.great_expectations_utils import validate_dataset
+from utils.great_expectations_utils import (
+    gx_checkpoint_generator,
+    validate_dateset
+)
 
 
 def main():
