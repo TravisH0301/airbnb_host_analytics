@@ -184,7 +184,7 @@ airbnb_metric_host_occupancy: >
             END AS IS_MULTI_LISTING,
             CASE
                 WHEN HOST.YEAR_OF_EXP = 0 THEN '0'
-                WHEN HOST.YEAR_OF_EXP > 0 AND HOST.YEAR_OF_EXP <= 4 THEN '0-4'
+                WHEN HOST.YEAR_OF_EXP > 0 AND HOST.YEAR_OF_EXP <= 4 THEN '1-4'
                 WHEN HOST.YEAR_OF_EXP > 4 AND HOST.YEAR_OF_EXP <= 7 THEN '4-7'
                 WHEN HOST.YEAR_OF_EXP > 7 AND HOST.YEAR_OF_EXP <= 10 THEN '7-10'
                 WHEN HOST.YEAR_OF_EXP > 10 THEN '>10'
