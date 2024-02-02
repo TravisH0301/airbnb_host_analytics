@@ -1,7 +1,7 @@
 ###############################################################################
 # Name: great_expectations_utils.py
-# Description: This script contains a Great Expectations utility module to
-#              easily create a checkpoint for data validations.
+# Description: This script contains Great Expectations utilities to
+#              aid data validation process.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
@@ -115,7 +115,7 @@ class gx_checkpoint_generator():
         configuration file to the expectation suite via the validator.
         """
         # Loop through expectations to add to validator
-        for expectation in  self.expectation_suite_yaml["expectations"]:
+        for expectation in self.expectation_suite_yaml["expectations"]:
             expectation_type = expectation["expectation_type"]
             kwargs = expectation["kwargs"]
             # Call expectation type method with keyword arguments
@@ -171,3 +171,32 @@ class gx_checkpoint_generator():
         )
 
         return checkpoint
+
+
+def validate_dateset(checkpoint_generator, dataset_name, df):
+    """This function validates the given dataset
+    using Great Expectations.
+
+    Parameters
+    ----------
+    checkpoint_generator: obj
+        Great Expectations checkpoint generator class instance
+    dataset_name: str
+        Name of dataset
+    df: Spark dataframe
+        Spark dataframe
+
+    Returns
+    -------
+    Great Expectations checkpoint results
+    """
+    yaml_prefix = dataset_name[7:]  # e.g., dim_host
+    expectation_suite_yaml_path = f"./conf/{yaml_prefix}_expectation_suite.yaml"
+
+    checkpoint = checkpoint_generator.create_checkpoint(
+        checkpoint_name=f"{yaml_prefix}_checkpoint",
+        df=df,
+        expectation_suite_yaml_path=expectation_suite_yaml_path
+    )
+
+    return checkpoint.run()
