@@ -26,7 +26,7 @@ expectations:
   - expectation_type: "expect_column_values_to_be_in_set"
     kwargs:
       column: "HOST_ABOUT_LENGTH_CATEGORY"
-      value_set: ["Short", "Concise", "Detailed", "Lengthy"]
+      value_set: ["No Description", "Short", "Concise", "Detailed", "Lengthy"]
   - expectation_type: "expect_column_values_to_be_between"
     kwargs:
       column: "AVERAGE_OCCUPANCY_RATE"
