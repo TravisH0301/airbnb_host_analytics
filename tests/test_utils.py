@@ -8,7 +8,7 @@
 import os
 import yaml
 import sys
-sys.path.append("src/azure-databricks/utils")
+sys.path.append("src/utils")
 
 from pyspark.sql import SparkSession, Row
 from unittest import TestCase, main
