@@ -78,30 +78,39 @@ with DAG(
 
     # Task to process raw datasets and load compiled dataset to silver layer
     data_processing = DatabricksRunNowOperator(
-        task_id = 'data_processing',
-        databricks_conn_id = 'databricks_default',
-        job_id = 128784675279690
+        task_id='data_processing',
+        databricks_conn_id='databricks_default',
+        job_id=128784675279690
     )
 
-    # Task to create dimensional model and load tables to gold layer
+    # Task to create dimensional model and load datasets to gold-dev layer
     data_modelling = DatabricksRunNowOperator(
-        task_id = 'data_modelling',
-        databricks_conn_id = 'databricks_default',
-        job_id = 851806766336090
+        task_id='data_modelling',
+        databricks_conn_id='databricks_default',
+        job_id=851806766336090
     )
 
-    # Task to create metric layer and load table to gold layer
+    # Task to validate dimensional model data quality in gold-dev layer
+    # and move to gold layer if validated successfully
+    model_data_quality_check = DatabricksRunNowOperator(
+        task_id='model_data_quality_check',
+        databricks_conn_id='databricks_default',
+        job_id=396336029834558
+    )
+
+    # Task to create metric layer and load dataset to gold-dev layer
     metric_layer = DatabricksRunNowOperator(
-        task_id = 'metric_layer',
-        databricks_conn_id = 'databricks_default',
-        job_id = 711715871126399
+        task_id='metric_layer',
+        databricks_conn_id='databricks_default',
+        job_id=711715871126399
     )
 
-    # Task to validate data quality of gold layer
-    data_quality_check = DatabricksRunNowOperator(
-        task_id = 'data_quality_check',
-        databricks_conn_id = 'databricks_default',
-        job_id = 283696756443919
+    # Task to validate metric layer data quality in gold-dev layer
+    # and move to gold layer if validated successfully
+    metric_data_quality_check = DatabricksRunNowOperator(
+        task_id='metric_data_quality_check',
+        databricks_conn_id='databricks_default',
+        job_id=283696756443919
     )
 
     # Define task dependecies
@@ -109,6 +118,7 @@ with DAG(
         data_ingestion
         >> data_processing
         >> data_modelling
+        >> model_data_quality_check
         >> metric_layer
-        >> data_quality_check
+        >> metric_data_quality_check
     )
