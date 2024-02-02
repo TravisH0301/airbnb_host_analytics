@@ -1,14 +1,11 @@
 ###############################################################################
 # Name: metric_quality_check.py
-# Description: This script validates data quality of the metric table
-#              in the gold-dev layer. Once, validated the table is loaded into
+# Description: This script validates data quality of the metric dataset
+#              in the gold-dev layer. Once validated, the dataset is loaded into
 #              the gold layer of the data lakehouse.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
-import os
-os.system("pip install great_expectations")
-
 import great_expectations as gx
 from great_expectations.checkpoint import Checkpoint
 
@@ -89,12 +86,11 @@ def main():
 
     # Run checkpoint to validate data quality
     checkpoint_result = checkpoint.run()
-    checkpoint_result_status = checkpoint_result.list_validation_results()[0]["success"]
     checkpoint_results = checkpoint_result.list_validation_results()[0]["results"]
 
     # Move table into gold layer if validated
-    if checkpoint_result_status is True:
-        logger.info(f"Data Quality Test results: {checkpoint_result_status}")
+    if checkpoint_result.success:
+        logger.info("Data quality has been successfully validated.")
         logger.info("Moving metric table to gold layer...")
         file_path, save_mode = (
             "gold/airbnb_metric_host_occupancy",
@@ -111,12 +107,14 @@ def main():
         )
 
     else:
-        raise Exception (
+        raise Exception(
             "Great Expectation checkpoint has failed with the following"
             f" results: \n\n{checkpoint_results}"
         )
 
     logger.info("Process has completed.")
+
+    print(checkpoint_results)###############
 
 
 if __name__ == "__main__":
