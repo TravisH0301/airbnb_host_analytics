@@ -8,35 +8,7 @@
 ###############################################################################
 from utils import utils
 from utils.great_expectations_utils import gx_checkpoint_generator
-
-
-def validate_dateset(checkpoint_generator, dataset_name, df):
-    """this function validate the given dataset
-    using Great Expectations.
-
-    Parameters
-    ----------
-    checkpoint_generator: obj
-        Great Expectations checkpoint generator class instance
-    dataset_name: str
-        Name of dataset
-    df: Spark dataframe
-        Spark dataframe
-
-    Returns
-    -------
-    Great Expectations checkpoint results
-    """
-    yaml_prefix = dataset_name[7:]  # e.g., dim_host
-    expectation_suite_yaml_path = f"./conf/{yaml_prefix}_expectation_suite.yaml"
-
-    checkpoint = checkpoint_generator.create_checkpoint(
-        checkpoint_name=f"{yaml_prefix}_checkpoint",
-        df=df,
-        expectation_suite_yaml_path=expectation_suite_yaml_path
-    )
-
-    return checkpoint.run()
+from utils.great_expectations_utils import validate_dataset
 
 
 def main():
