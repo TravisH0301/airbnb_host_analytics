@@ -4,35 +4,42 @@ airbnb_processed: >
             TO_DATE(last_scraped, 'yyyy-MM-dd') AS SNAPSHOT_DATE,
             CAST(RIGHT(listing_url, POSITION('/' IN REVERSE(listing_url)) - 1) AS LONG) AS LISTING_ID,
             host_id AS HOST_ID,
-            ROUND(
-                DATEDIFF(
-                    CURRENT_DATE,
-                    TO_DATE(host_since, 'yyyy-MM-dd')
-                ) / 365,
-                0
+            CAST(
+                ROUND(
+                    DATEDIFF(
+                        CURRENT_DATE,
+                        TO_DATE(host_since, 'yyyy-MM-dd')
+                    ) / 365,
+                    0
+                ) AS INT
             ) AS YEAR_OF_EXP,
             CAST(
                 LENGTH(RTRIM(LTRIM(host_about)))
                 - LENGTH(REPLACE(RTRIM(LTRIM(host_about)), ' ', ''))
                 + 1
-                AS NUMERIC
+                AS INT
             ) AS ABOUT_WORD_COUNT,
             host_is_superhost AS IS_SUPERHOST,
             host_has_profile_pic AS HAS_PROFILE_PHOTO,
-            calculated_host_listings_count AS LISTING_COUNT,
+            CAST(calculated_host_listings_count AS INT) AS LISTING_COUNT,
             latitude AS LATITUDE,
             longitude AS LONGITUDE,
-            CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC) AS PRICE,
+            CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS DOUBLE) AS PRICE,
             PERCENTILE_APPROX(
-                CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC),
+                CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS DOUBLE),
                 0.50
             ) OVER() AS PRICE_2Q,
             PERCENTILE_APPROX(
-                CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS NUMERIC),
+                CAST(REPLACE(REPLACE(price, '$', ''), ',', '') AS DOUBLE),
                 0.75
             ) OVER() * 1.5 AS PRICE_UPPER,
-            ROUND((30 - CAST(availability_30 AS NUMERIC)) / 30 * 100, 0) AS OCCUPANCY_RATE,
-            number_of_reviews AS REVIEW_COUNT,
+            CAST(
+                ROUND(
+                    (30 - CAST(availability_30 AS NUMERIC)) / 30 * 100,
+                    0
+                ) AS INT
+            ) AS OCCUPANCY_RATE,
+            CAST(number_of_reviews AS INT) AS REVIEW_COUNT,
             neighbourhood_cleansed AS MUNICIPALITY
         FROM dataset
         WHERE 1=1
@@ -77,19 +84,19 @@ airbnb_processed: >
     )
     SELECT
         SNAPSHOT_DATE,
-        LISTING_ID,
-        HOST_ID,
-        YEAR_OF_EXP,
-        ABOUT_WORD_COUNT,
-        IS_SUPERHOST,
-        HAS_PROFILE_PHOTO,
-        LISTING_COUNT,
-        LATITUDE,
-        LONGITUDE,
-        OCCUPANCY_RATE,
-        PRICE,
-        REVIEW_COUNT,
-        MUNICIPALITY
+            LISTING_ID,
+            HOST_ID,
+            YEAR_OF_EXP,
+            ABOUT_WORD_COUNT,
+            IS_SUPERHOST,
+            HAS_PROFILE_PHOTO,
+            LISTING_COUNT,
+            LATITUDE,
+            LONGITUDE,
+            OCCUPANCY_RATE,
+            PRICE,
+            REVIEW_COUNT,
+            MUNICIPALITY
     FROM BASE
     WHERE 1=1
         AND PRICE >= PRICE_2Q
