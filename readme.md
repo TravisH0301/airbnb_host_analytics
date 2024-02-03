@@ -59,6 +59,8 @@ This task validates the metrics layer in the Gold-dev layer using a Python job i
 In scheduling the above tasks in Airflow, job monitoring is aided with email alerts via SMTP by sending email alerts upon a success or failure of the job.
 
 ## Data Modelling
+
+
 SCD type 2
 Monthly snapshot fact table
 metrics layer with the latest data
