@@ -1,6 +1,7 @@
 ###############################################################################
 # Name: test_ingest_data.py
-# Description: This script conducts unit test with ingest_data.py script.
+# Description: This script conducts unit test and integration test 
+#              with ingest_data.py script.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################

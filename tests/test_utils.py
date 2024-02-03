@@ -1,7 +1,6 @@
 ###############################################################################
 # Name: test_utils.py
-# Description: This script conducts unit test and integration test with
-#              utils.py script.
+# Description: This script conducts unit test with utils.py script.
 # Author: Travis Hong
 # Repository: https://github.com/TravisH0301/azure_airbnb_host_analytics
 ###############################################################################
