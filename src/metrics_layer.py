@@ -1,6 +1,6 @@
 ###############################################################################
-# Name: metric_layer.py
-# Description: This script creates a metric layer on top of the dimensional
+# Name: metrics_layer.py
+# Description: This script creates a metrics layer on top of the dimensional
 #              data model and stores into the gold-dev layer of the data
 #              lakehouse.
 # Author: Travis Hong
@@ -39,8 +39,8 @@ def main():
         )
         df.createOrReplaceTempView(df_name)
 
-    # Create metric layer table
-    """Metric layer table contains records about host's characteristics
+    # Create metrics layer table
+    """Metrics layer table contains records about host's characteristics
     and their listing's occupancy rate in the next 30 days.
     This table is built on top of the dimensional data model to allows
     one to easily analyse the effect of host characteristics on thier
@@ -73,23 +73,23 @@ def main():
     - AVERAGE_OCCUPANCY_RATE: Average occupancy rate of host's listings
     - SNAPSHOT_YEAR_MONTH: Record snapshot year month in YYYYMM
     """
-    logger.info("Creating metric layer table...")
-    query_name = "airbnb_metric_host_occupancy"
+    logger.info("Creating metrics layer table...")
+    query_name = "airbnb_metrics_host_occupancy"
     query = utils.get_query(query_name)
-    df_airbnb_metric = spark.sql(query)
+    df_airbnb_metrics = spark.sql(query)
 
-    # Load metric layer table into gold-dev layer
+    # Load metrics layer table into gold-dev layer
     """The table is loaded into the gold-dev layer.
     The table will undergo data quality check before
     moving into the gold layer.
     """
-    logger.info("Loading metric layer table into gold-dev layer...")
-    file_path = "gold-dev/airbnb_metric_host_occupancy"
+    logger.info("Loading metrics layer table into gold-dev layer...")
+    file_path = "gold-dev/airbnb_metrics_host_occupancy"
     save_mode = "overwrite"
     utils.load_df_to_adls(
         spark,
         dbutils,
-        df_airbnb_metric,
+        df_airbnb_metrics,
         container_name,
         file_path,
         file_type,

@@ -1,6 +1,6 @@
 ###############################################################################
-# Name: metric_quality_check.py
-# Description: This script validates data quality of the metric dataset
+# Name: metrics_quality_check.py
+# Description: This script validates data quality of the metrics dataset
 #              in the gold-dev layer. Once validated, the dataset is loaded into
 #              the gold layer of the data lakehouse.
 # Author: Travis Hong
@@ -20,11 +20,11 @@ def main():
     logger.info("Configuring storage account credentials...")
     utils.set_azure_storage_config(spark, dbutils)
 
-    # Load metric layer dataset from gold-dev layer
-    logger.info("Loading metric layer dataset from gold-dev layer...")
+    # Load metrics layer dataset from gold-dev layer
+    logger.info("Loading metrics layer dataset from gold-dev layer...")
     container_name, file_path, file_type = (
         "airbnb-host-analytics",
-        "gold-dev/airbnb_metric_host_occupancy",
+        "gold-dev/airbnb_metrics_host_occupancy",
         "delta"
     )
     df = utils.load_data_to_df(
@@ -42,7 +42,7 @@ def main():
     # Validate dataset and move it into gold layer if validated successfully
     # Run data validation using Great Expectations
     dataset_name = file_path[9:]
-    logger.info(f"Validating metric layer dataset {dataset_name}...")
+    logger.info(f"Validating metrics layer dataset {dataset_name}...")
     results = validate_dateset(
         checkpoint_generator,
         dataset_name,
@@ -55,7 +55,7 @@ def main():
         logger.info("Data validation has been successful.")
         logger.info(f"Moving dataset {dataset_name} to gold layer...")
         file_path, save_mode = (
-            "gold/airbnb_metric_host_occupancy",
+            "gold/airbnb_metrics_host_occupancy",
             "overwrite"
         )
         utils.load_df_to_adls(

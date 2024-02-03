@@ -98,17 +98,17 @@ with DAG(
         job_id=396336029834558
     )
 
-    # Task to create metric layer and load dataset to gold-dev layer
-    metric_layer = DatabricksRunNowOperator(
-        task_id='metric_layer',
+    # Task to create metrics layer and load dataset to gold-dev layer
+    metrics_layer = DatabricksRunNowOperator(
+        task_id='metrics_layer',
         databricks_conn_id='databricks_default',
         job_id=711715871126399
     )
 
-    # Task to validate metric layer data quality in gold-dev layer
+    # Task to validate metrics layer data quality in gold-dev layer
     # and move to gold layer if validated successfully
-    metric_data_quality_check = DatabricksRunNowOperator(
-        task_id='metric_data_quality_check',
+    metrics_data_quality_check = DatabricksRunNowOperator(
+        task_id='metrics_data_quality_check',
         databricks_conn_id='databricks_default',
         job_id=283696756443919
     )
@@ -119,6 +119,6 @@ with DAG(
         >> data_processing
         >> data_modelling
         >> model_data_quality_check
-        >> metric_layer
-        >> metric_data_quality_check
+        >> metrics_layer
+        >> metrics_data_quality_check
     )
