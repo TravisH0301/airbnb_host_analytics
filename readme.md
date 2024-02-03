@@ -14,8 +14,8 @@ The architecture of the end-to-end data solution comprises of a mix of open sour
 - <b>Azure Key Vault</b>: Azure Key Vault is used to store credentials of the Azure storage account, allowing data processes to access datasets in the data lakehouse securely.
 - <b>Great Expectations</b>: Great Expectations is used as a data qaulity framework ensuring resultant data assets to be validated and reliable in the Gold layer of the data lakehouse.
 - <b>Apache Airflow & Azure Data Factory</b>: Apache Airflow orchestrates the data flow by triggering Azure function app and Spark jobs on Databricks. Airflow is hosted on Azure Data Factory as a managed service.
-- <b>Terraform</b>: Terraform is used to
-- <b>GitHub Actions</b>:
+- <b>Terraform</b>: Terraform is used to manage Azure Data Lake Storage infrastructure.
+- <b>GitHub Actions</b>: GitHub Actions hosts CI pipeline running unit tests and integration tests on the data processes.
 
 ## Data Pipeline
 <img src="./images/data_flow.JPG" width="800">
