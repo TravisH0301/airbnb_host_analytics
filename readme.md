@@ -59,11 +59,12 @@ This task validates the metrics layer in the Gold-dev layer using a Python job i
 In scheduling the above tasks in Airflow, job monitoring is aided with email alerts via SMTP by sending email alerts upon a success or failure of the job.
 
 ## Data Modelling
-
-
-SCD type 2
-Monthly snapshot fact table
-metrics layer with the latest data
+<add medallion architecture>
+bronze -> silver -> gold (& gold-dev) layers
+<add data modelling image>
+- SCD type 2
+- Monthly snapshot fact table
+- metrics layer with the latest data
 
 ## Data Quality
 write, audit, publish for gold layer data assets
@@ -74,6 +75,13 @@ write, audit, publish for gold layer data assets
 ### CD
 
 ### IaC
+
+## Considerations
+- <b>Data Lifecycle</b>: <br>
+https://learn.microsoft.com/en-us/azure/databricks/optimizations/archive-delta
+- <b>Query Optimisation</b>: <br>
+- <b>End-to-End testing</b>: <br>
+end-to-end testing using non-production environment before executing jobs in the production
 
 ## Insights
 <img src="./images/dashboard.JPG" width="800">
@@ -98,9 +106,6 @@ Listings with a higher count of reviews generally have greater occupancy rates, 
 Hosts with "winning" attributes (those linked to higher occupancy rates) significantly outperform those without, highlighting the benefits of cultivating positive hosting traits.
 
 Overall, the data suggests that personal touches and credibility markers like Super Host status, a clear profile photo, a rich host description, experience, and a high review count are key to enhancing an Airbnb listing's performance.
-
-## Considerations
-- <b>Data Lifecycle</b>:
 
 ## Data Source
 This study is conducted over the Airbnb listing datasets provided by [Inside Airbnb](http://insideairbnb.com/).
