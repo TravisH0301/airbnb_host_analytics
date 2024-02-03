@@ -133,7 +133,10 @@ airbnb_dim_host: >
         YEAR_OF_EXP,
         LISTING_COUNT,
         START_DATE,
-        COALESCE(END_DATE, '9999-12-31') AS END_DATE,
+        COALESCE(
+            END_DATE,
+            TO_DATE('9999-12-31', 'yyyy-MM-dd')
+        ) AS END_DATE,
         CASE WHEN RN = 1 THEN 'Y' ELSE 'N' END AS CURRENT_IND
     FROM BASE
 
@@ -160,7 +163,10 @@ airbnb_dim_listing: >
         PRICE,
         REVIEW_COUNT,
         START_DATE,
-        COALESCE(END_DATE, '9999-12-31') AS END_DATE,
+        COALESCE(
+            END_DATE,
+            TO_DATE('9999-12-31', 'yyyy-MM-dd')
+        ) AS END_DATE,
         CASE WHEN RN = 1 THEN 'Y' ELSE 'N' END AS CURRENT_IND
     FROM BASE
 
