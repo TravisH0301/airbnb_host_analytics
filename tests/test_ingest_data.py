@@ -7,7 +7,7 @@
 ###############################################################################
 import yaml
 import sys
-sys.path.append("src/azure-function")
+sys.path.append("./src/azure-function")
 
 from unittest import TestCase, main
 
