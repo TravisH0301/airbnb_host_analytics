@@ -10,7 +10,7 @@ import gzip
 import yaml
 import io
 import sys
-sys.path.append("./src/azure-databricks")
+sys.path.append("./src")
 
 import pandas as pd
 from azure.storage.filedatalake import DataLakeServiceClient
