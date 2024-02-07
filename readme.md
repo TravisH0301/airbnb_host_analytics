@@ -109,7 +109,7 @@ Code linting is done as a static test triggered by a Git commit action to valida
 - <b>CI</b>: <br>
 CI pipeline is executed on the GitHub Actions to conduct the unit test and integration test. And the pipeline is executed upon a push action on the Git repository.
 - <b>CD</b>: <br>
-CD was not considered as Airflow DAG script and Python scripts are sourced directly from the Git repository. However for further improvement, CD pipeline can be added to automatically deploy Azure Function app upon any update.
+CD was not considered as Airflow DAG script and Python scripts are sourced directly from the Git repository. However for future improvement, CD pipeline can be added to automatically deploy Azure Function app upon any update.
 - <b>IaC</b>: <br>
 Terraform is used to spin up the Azure Data Lake Storage infrastructure. In case of a end-to-end testing, Terraform can be used to spin up and tear down services in non-production environment.
 
