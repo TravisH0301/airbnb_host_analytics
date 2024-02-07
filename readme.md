@@ -1,4 +1,15 @@
 # Airbnb Host Analytics
+1. [Overview](#airbnb-host-analytics)
+2. [Scope](#scope)
+3. [Architecture](#architecture)
+4. [Data Pipeline](#data-pipeline)
+5. [Data Modelling](#data-modelling)
+6. [Data Quality](#data-quality)
+7. [DevOps](#devops)
+8. [Considerations](#considerations)
+9. [Insights](#insights)
+10. [Data Source](#data-source)
+
 This project analyses the impact of Airbnb host characteristics on property listing performance, specifically occupancy rates over the next 30 days. A robust data solution encompassing data collection, processing, and analysis has been designed and implemented to facilitate this study.
 
 ## Scope
